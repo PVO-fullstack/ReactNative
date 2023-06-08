@@ -9,8 +9,8 @@ import {
 } from "react-native";
 import PostsScreeen from "./Screens/PostsScreen";
 import bg from "./img/Photo_BG.jpg";
-import RegistrationScreens from "./components/RegistrationScreen";
-import LoginScreen from "./components/LoginScreen";
+import RegistrationScreens from "./Screens/RegistrationScreen";
+import LoginScreen from "./Screens/LoginScreen";
 
 export default function App() {
   const [isLogin, setIsLogin] = useState(false);

@@ -12,11 +12,10 @@ import {
 } from "react-native";
 import img from "../img/Union.png";
 
-export default function RegistrationScreens({ setlogin }) {
+export default function LoginScreen({ setlogin }) {
   const [isKeyboardShow, setIsKeyboardShow] = useState(false);
   const [isHidePassword, setIsHidePassword] = useState(true);
   const [option, setOption] = useState({
-    login: false,
     email: false,
     password: false,
   });
@@ -31,7 +30,7 @@ export default function RegistrationScreens({ setlogin }) {
     setIsHidePassword(false);
   };
 
-  const { login, email, password } = option;
+  const { email, password } = option;
 
   return (
     <TouchableWithoutFeedback onPress={keyboardHide}>
@@ -39,17 +38,7 @@ export default function RegistrationScreens({ setlogin }) {
         <View
           style={{ ...styles.form, marginBottom: isKeyboardShow ? -100 : 0 }}
         >
-          <Text style={styles.title}>Реєстрація</Text>
-          <TextInput
-            onFocus={() => {
-              setOption({ login: true });
-              setIsKeyboardShow(true);
-            }}
-            onBlur={() => setOption({ login: false })}
-            placeholder="Логін"
-            placeholderTextColor="#bdbdbd"
-            style={!login ? styles.formInput : styles.inputFocus}
-          />
+          <Text style={styles.title}>Увійти</Text>
           <TextInput
             onFocus={() => {
               setOption({ email: true });
@@ -77,15 +66,11 @@ export default function RegistrationScreens({ setlogin }) {
             </Text>
           </View>
           <TouchableHighlight onPress={keyboardHide} style={styles.button}>
-            <Text style={styles.buttonText}>Зареєструватися</Text>
+            <Text style={styles.buttonText}>Увійти</Text>
           </TouchableHighlight>
-          <Text onPress={() => setlogin(true)} style={styles.formEndText}>
-            Вже є акаунт? Увійти
+          <Text onPress={() => setlogin(false)} style={styles.formEndText}>
+            Немає акаунту? Зареєструватися
           </Text>
-          <View style={styles.forPhoto}></View>
-          <View style={styles.plus}>
-            <Image source={img} />
-          </View>
         </View>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
@@ -105,7 +90,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
   },
   title: {
-    marginTop: 82,
+    marginTop: 32,
     marginBottom: 33,
     fontSize: 30,
     fontWeight: 500,
@@ -143,6 +128,8 @@ const styles = StyleSheet.create({
   inscriptiption: {
     position: "absolute",
     padding: 16,
+    color: "#1B4371",
+    fontSize: 16,
   },
   button: {
     width: 343,
@@ -166,11 +153,11 @@ const styles = StyleSheet.create({
     color: "#1B4371",
     fontSize: 16,
     fontFamily: "Roboto",
-    marginBottom: 78,
+    marginBottom: 144,
   },
   form: {
     alignItems: "center",
-    height: 549,
+    height: 489,
     left: 0,
     backgroundColor: "#ffffff",
     borderTopLeftRadius: 25,
