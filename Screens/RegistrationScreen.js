@@ -10,18 +10,26 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
 } from "react-native";
-// import img from "../img/Union.png";
 import { AntDesign } from "@expo/vector-icons";
+
+const initialState = {
+  login: "",
+  email: "",
+  password: "",
+};
 
 export default function RegistrationScreens({ setlogin }) {
   const [isKeyboardShow, setIsKeyboardShow] = useState(false);
   const [isHidePassword, setIsHidePassword] = useState(true);
   const [option, setOption] = useState("");
+  const [state, setState] = useState(initialState);
 
   const keyboardHide = () => {
     setIsKeyboardShow(false);
     setIsHidePassword(true);
     Keyboard.dismiss();
+    console.log(state);
+    setState(initialState);
   };
 
   const toggleHidePassword = () => {
@@ -43,6 +51,10 @@ export default function RegistrationScreens({ setlogin }) {
             onBlur={() => setOption("")}
             placeholder="Логін"
             placeholderTextColor="#bdbdbd"
+            onChangeText={(value) => {
+              setState((prevState) => ({ ...prevState, login: value }));
+            }}
+            value={state.login}
             style={[styles.formInput, option === "login" && styles.inputFocus]}
           />
           <TextInput
@@ -53,6 +65,10 @@ export default function RegistrationScreens({ setlogin }) {
             onBlur={() => setOption("")}
             placeholder="Адреса електронної пошти"
             placeholderTextColor="#bdbdbd"
+            onChangeText={(value) => {
+              setState((prevState) => ({ ...prevState, email: value }));
+            }}
+            value={state.email}
             style={[styles.formInput, option === "email" && styles.inputFocus]}
           />
           <View style={styles.passwordInput}>
@@ -65,6 +81,10 @@ export default function RegistrationScreens({ setlogin }) {
               secureTextEntry={isHidePassword}
               placeholder="Пароль"
               placeholderTextColor="#bdbdbd"
+              onChangeText={(value) => {
+                setState((prevState) => ({ ...prevState, password: value }));
+              }}
+              value={state.password}
               style={[
                 styles.formInput,
                 option === "password" && styles.inputFocus,

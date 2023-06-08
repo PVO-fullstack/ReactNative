@@ -12,25 +12,28 @@ import {
 } from "react-native";
 import img from "../img/Union.png";
 
+const initialState = {
+  email: "",
+  password: "",
+};
+
 export default function LoginScreen({ setlogin }) {
   const [isKeyboardShow, setIsKeyboardShow] = useState(false);
   const [isHidePassword, setIsHidePassword] = useState(true);
-  const [option, setOption] = useState({
-    email: false,
-    password: false,
-  });
+  const [option, setOption] = useState("");
+  const [state, setState] = useState(initialState);
 
   const keyboardHide = () => {
     setIsKeyboardShow(false);
     setIsHidePassword(true);
     Keyboard.dismiss();
+    console.log(state);
+    setState(initialState);
   };
 
   const toggleHidePassword = () => {
-    setIsHidePassword(false);
+    setIsHidePassword((prev) => !prev);
   };
-
-  const { email, password } = option;
 
   return (
     <TouchableWithoutFeedback onPress={keyboardHide}>
@@ -41,28 +44,39 @@ export default function LoginScreen({ setlogin }) {
           <Text style={styles.title}>Увійти</Text>
           <TextInput
             onFocus={() => {
-              setOption({ email: true });
+              setOption("email");
               setIsKeyboardShow(true);
             }}
-            onBlur={() => setOption({ email: false })}
+            onBlur={() => setOption("")}
             placeholder="Адреса електронної пошти"
             placeholderTextColor="#bdbdbd"
-            style={!email ? styles.formInput : styles.inputFocus}
+            onChangeText={(value) => {
+              setState((prevState) => ({ ...prevState, email: value }));
+            }}
+            value={state.email}
+            style={[styles.formInput, option === "email" && styles.inputFocus]}
           />
           <View style={styles.passwordInput}>
             <TextInput
               onFocus={() => {
-                setOption({ password: true });
+                setOption("password");
                 setIsKeyboardShow(true);
               }}
-              onBlur={() => setOption({ password: false })}
+              onBlur={() => setOption("")}
               secureTextEntry={isHidePassword}
               placeholder="Пароль"
               placeholderTextColor="#bdbdbd"
-              style={!password ? styles.formInput : styles.inputFocus}
+              onChangeText={(value) => {
+                setState((prevState) => ({ ...prevState, password: value }));
+              }}
+              value={state.password}
+              style={[
+                styles.formInput,
+                option === "password" && styles.inputFocus,
+              ]}
             />
             <Text onPress={toggleHidePassword} style={styles.inscriptiption}>
-              Показати
+              {isHidePassword ? "Показати" : "Сховати"}
             </Text>
           </View>
           <TouchableHighlight onPress={keyboardHide} style={styles.button}>
