@@ -39,7 +39,7 @@ export default function LoginScreen({ setlogin }) {
     <TouchableWithoutFeedback onPress={keyboardHide}>
       <KeyboardAvoidingView style={styles.container}>
         <View
-          style={{ ...styles.form, marginBottom: isKeyboardShow ? -100 : 0 }}
+          style={{ ...styles.form, marginBottom: isKeyboardShow ? -200 : 0 }}
         >
           <Text style={styles.title}>Увійти</Text>
           <TextInput

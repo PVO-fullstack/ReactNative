@@ -100,13 +100,14 @@ export default function RegistrationScreens({ setlogin }) {
           <Text onPress={() => setlogin(true)} style={styles.formEndText}>
             Вже є акаунт? Увійти
           </Text>
-          <View style={styles.forPhoto}></View>
-          <AntDesign
-            style={styles.plus}
-            name="pluscircleo"
-            size={24}
-            color="#FF6C00"
-          />
+          <View style={styles.forPhoto}>
+            <AntDesign
+              style={styles.plus}
+              name="pluscircleo"
+              size={24}
+              color="#FF6C00"
+            />
+          </View>
           {/* <View style={styles.plus}>
             <Image source={img} />
           </View> */}
@@ -149,15 +150,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   inputFocus: {
-    // width: 343,
-    // height: 50,
-    // paddingLeft: 32,
-    // color: "#212121",
-    // fontSize: 16,
-    // marginBottom: 16,
-    // borderRadius: 8,
-    // borderStyle: "solid",
-    // borderWidth: 1,
     backgroundColor: "#ffffff",
     borderColor: "#FF6C00",
   },
@@ -204,10 +196,8 @@ const styles = StyleSheet.create({
   },
   plus: {
     position: "absolute",
-    top: 21,
-    right: 135,
-    width: 25,
-    height: 25,
+    top: 81,
+    left: 107,
     borderRadius: 50,
     borderColor: "#FF6C00",
     borderWidth: 1,
