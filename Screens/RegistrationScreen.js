@@ -32,7 +32,11 @@ export default function RegistrationScreens({ setlogin }) {
   };
 
   return (
-    <KeyboardAvoidingView style={styles.container}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS == "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={-70}
+    >
       <View style={styles.form}>
         <Text style={styles.title}>Реєстрація</Text>
         <TextInput

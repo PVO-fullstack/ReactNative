@@ -30,7 +30,11 @@ export default function LoginScreen({ setlogin }) {
   };
 
   return (
-    <KeyboardAvoidingView style={styles.container}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS == "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={-20}
+    >
       <View style={styles.form}>
         <Text style={styles.title}>Увійти</Text>
         <TextInput
