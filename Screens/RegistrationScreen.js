@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-  Image,
   StyleSheet,
   View,
   Text,
@@ -8,9 +7,8 @@ import {
   KeyboardAvoidingView,
   TouchableHighlight,
   Keyboard,
-  TouchableWithoutFeedback,
 } from "react-native";
-import { AntDesign } from "@expo/vector-icons";
+import { EvilIcons } from "@expo/vector-icons";
 
 const initialState = {
   login: "",
@@ -19,14 +17,11 @@ const initialState = {
 };
 
 export default function RegistrationScreens({ setlogin }) {
-  const [isKeyboardShow, setIsKeyboardShow] = useState(false);
   const [isHidePassword, setIsHidePassword] = useState(true);
   const [option, setOption] = useState("");
   const [state, setState] = useState(initialState);
 
   const keyboardHide = () => {
-    setIsKeyboardShow(false);
-    setIsHidePassword(true);
     Keyboard.dismiss();
     console.log(state);
     setState(initialState);
@@ -37,83 +32,73 @@ export default function RegistrationScreens({ setlogin }) {
   };
 
   return (
-    <TouchableWithoutFeedback onPress={keyboardHide}>
-      <KeyboardAvoidingView style={styles.container}>
-        <View
-          style={{ ...styles.form, marginBottom: isKeyboardShow ? -100 : 0 }}
-        >
-          <Text style={styles.title}>Реєстрація</Text>
+    <KeyboardAvoidingView style={styles.container}>
+      <View style={styles.form}>
+        <Text style={styles.title}>Реєстрація</Text>
+        <TextInput
+          onFocus={() => {
+            setOption("login");
+          }}
+          onBlur={() => setOption("")}
+          placeholder="Логін"
+          placeholderTextColor="#bdbdbd"
+          onChangeText={(value) => {
+            setState((prevState) => ({ ...prevState, login: value }));
+          }}
+          value={state.login}
+          style={[styles.formInput, option === "login" && styles.inputFocus]}
+        />
+        <TextInput
+          onFocus={() => {
+            setOption("email");
+          }}
+          onBlur={() => setOption("")}
+          placeholder="Адреса електронної пошти"
+          placeholderTextColor="#bdbdbd"
+          onChangeText={(value) => {
+            setState((prevState) => ({ ...prevState, email: value }));
+          }}
+          value={state.email}
+          style={[styles.formInput, option === "email" && styles.inputFocus]}
+        />
+        <View style={styles.passwordInput}>
           <TextInput
             onFocus={() => {
-              setOption("login");
-              setIsKeyboardShow(true);
+              setOption("password");
             }}
             onBlur={() => setOption("")}
-            placeholder="Логін"
+            secureTextEntry={isHidePassword}
+            placeholder="Пароль"
             placeholderTextColor="#bdbdbd"
             onChangeText={(value) => {
-              setState((prevState) => ({ ...prevState, login: value }));
+              setState((prevState) => ({ ...prevState, password: value }));
             }}
-            value={state.login}
-            style={[styles.formInput, option === "login" && styles.inputFocus]}
+            value={state.password}
+            style={[
+              styles.formInput,
+              option === "password" && styles.inputFocus,
+            ]}
           />
-          <TextInput
-            onFocus={() => {
-              setOption("email");
-              setIsKeyboardShow(true);
-            }}
-            onBlur={() => setOption("")}
-            placeholder="Адреса електронної пошти"
-            placeholderTextColor="#bdbdbd"
-            onChangeText={(value) => {
-              setState((prevState) => ({ ...prevState, email: value }));
-            }}
-            value={state.email}
-            style={[styles.formInput, option === "email" && styles.inputFocus]}
-          />
-          <View style={styles.passwordInput}>
-            <TextInput
-              onFocus={() => {
-                setOption("password");
-                setIsKeyboardShow(true);
-              }}
-              onBlur={() => setOption("")}
-              secureTextEntry={isHidePassword}
-              placeholder="Пароль"
-              placeholderTextColor="#bdbdbd"
-              onChangeText={(value) => {
-                setState((prevState) => ({ ...prevState, password: value }));
-              }}
-              value={state.password}
-              style={[
-                styles.formInput,
-                option === "password" && styles.inputFocus,
-              ]}
-            />
-            <Text onPress={toggleHidePassword} style={styles.inscriptiption}>
-              {isHidePassword ? "Показати" : "Сховати"}
-            </Text>
-          </View>
-          <TouchableHighlight onPress={keyboardHide} style={styles.button}>
-            <Text style={styles.buttonText}>Зареєструватися</Text>
-          </TouchableHighlight>
-          <Text onPress={() => setlogin(true)} style={styles.formEndText}>
-            Вже є акаунт? Увійти
+          <Text onPress={toggleHidePassword} style={styles.inscriptiption}>
+            {isHidePassword ? "Показати" : "Сховати"}
           </Text>
-          <View style={styles.forPhoto}>
-            <AntDesign
-              style={styles.plus}
-              name="pluscircleo"
-              size={24}
-              color="#FF6C00"
-            />
-          </View>
-          {/* <View style={styles.plus}>
-            <Image source={img} />
-          </View> */}
         </View>
-      </KeyboardAvoidingView>
-    </TouchableWithoutFeedback>
+        <TouchableHighlight onPress={keyboardHide} style={styles.button}>
+          <Text style={styles.buttonText}>Зареєструватися</Text>
+        </TouchableHighlight>
+        <Text onPress={() => setlogin(true)} style={styles.formEndText}>
+          Вже є акаунт? Увійти
+        </Text>
+        <View style={styles.forPhoto}>
+          <EvilIcons
+            style={styles.plus}
+            name="plus"
+            size={24}
+            color="#FF6C00"
+          />
+        </View>
+      </View>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -198,10 +183,5 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 81,
     left: 107,
-    borderRadius: 50,
-    borderColor: "#FF6C00",
-    borderWidth: 1,
-    justifyContent: "center",
-    alignItems: "center",
   },
 });

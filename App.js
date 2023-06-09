@@ -3,11 +3,9 @@ import {
   View,
   ImageBackground,
   StyleSheet,
-  Text,
-  SafeAreaView,
-  FlatList,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
-import PostsScreeen from "./Screens/PostsScreen";
 import bg from "./img/Photo_BG.jpg";
 import RegistrationScreens from "./Screens/RegistrationScreen";
 import LoginScreen from "./Screens/LoginScreen";
@@ -20,15 +18,17 @@ export default function App() {
   }
 
   return (
-    <View style={styles.conteiner}>
-      <ImageBackground style={styles.image} resizeMode="cover" source={bg}>
-        {isLogin ? (
-          <LoginScreen setlogin={setValue} />
-        ) : (
-          <RegistrationScreens setlogin={setValue} />
-        )}
-      </ImageBackground>
-    </View>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={styles.conteiner}>
+        <ImageBackground style={styles.image} resizeMode="cover" source={bg}>
+          {isLogin ? (
+            <LoginScreen setlogin={setValue} />
+          ) : (
+            <RegistrationScreens setlogin={setValue} />
+          )}
+        </ImageBackground>
+      </View>
+    </TouchableWithoutFeedback>
   );
 }
 
