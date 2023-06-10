@@ -1,44 +1,9 @@
-import React, { useState } from "react";
-import {
-  View,
-  ImageBackground,
-  StyleSheet,
-  TouchableWithoutFeedback,
-  Keyboard,
-} from "react-native";
-import bg from "./img/Photo_BG.jpg";
-import RegistrationScreens from "./Screens/RegistrationScreen";
-import LoginScreen from "./Screens/LoginScreen";
+import React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { router } from "./router";
 
 export default function App() {
-  const [isLogin, setIsLogin] = useState(false);
+  const routing = router({});
 
-  function setValue(bool) {
-    setIsLogin(bool);
-  }
-
-  return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={styles.conteiner}>
-        <ImageBackground style={styles.image} resizeMode="cover" source={bg}>
-          {isLogin ? (
-            <LoginScreen setlogin={setValue} />
-          ) : (
-            <RegistrationScreens setlogin={setValue} />
-          )}
-        </ImageBackground>
-      </View>
-    </TouchableWithoutFeedback>
-  );
+  return <NavigationContainer>{routing}</NavigationContainer>;
 }
-
-const styles = StyleSheet.create({
-  conteiner: {
-    flex: 1,
-  },
-  image: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "flex-end",
-  },
-});

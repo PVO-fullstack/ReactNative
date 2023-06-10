@@ -7,14 +7,17 @@ import {
   KeyboardAvoidingView,
   TouchableHighlight,
   Keyboard,
+  TouchableWithoutFeedback,
+  ImageBackground,
 } from "react-native";
+import bg from "../img/Photo_BG.jpg";
 
 const initialState = {
   email: "",
   password: "",
 };
 
-export default function LoginScreen({ setlogin }) {
+export default function LoginScreen({ navigation }) {
   const [isHidePassword, setIsHidePassword] = useState(true);
   const [option, setOption] = useState("");
   const [state, setState] = useState(initialState);
@@ -30,62 +33,85 @@ export default function LoginScreen({ setlogin }) {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS == "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={-20}
-    >
-      <View style={styles.form}>
-        <Text style={styles.title}>Увійти</Text>
-        <TextInput
-          onFocus={() => {
-            setOption("email");
-          }}
-          onBlur={() => setOption("")}
-          placeholder="Адреса електронної пошти"
-          placeholderTextColor="#bdbdbd"
-          onChangeText={(value) => {
-            setState((prevState) => ({ ...prevState, email: value }));
-          }}
-          value={state.email}
-          style={[styles.formInput, option === "email" && styles.inputFocus]}
-        />
-        <View style={styles.passwordInput}>
-          <TextInput
-            onFocus={() => {
-              setOption("password");
-            }}
-            onBlur={() => setOption("")}
-            secureTextEntry={isHidePassword}
-            placeholder="Пароль"
-            placeholderTextColor="#bdbdbd"
-            onChangeText={(value) => {
-              setState((prevState) => ({ ...prevState, password: value }));
-            }}
-            value={state.password}
-            style={[
-              styles.formInput,
-              option === "password" && styles.inputFocus,
-            ]}
-          />
-          <Text onPress={toggleHidePassword} style={styles.inscriptiption}>
-            {isHidePassword ? "Показати" : "Сховати"}
-          </Text>
-        </View>
-        <TouchableHighlight onPress={keyboardHide} style={styles.button}>
-          <Text style={styles.buttonText}>Увійти</Text>
-        </TouchableHighlight>
-        <Text onPress={() => setlogin(false)} style={styles.formEndText}>
-          Немає акаунту? Зареєструватися
-        </Text>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={styles.container}>
+        <ImageBackground style={styles.image} resizeMode="cover" source={bg}>
+          <KeyboardAvoidingView
+            style={styles.container}
+            behavior={Platform.OS == "ios" ? "padding" : "height"}
+            keyboardVerticalOffset={-240}
+          >
+            <View style={styles.form}>
+              <Text style={styles.title}>Увійти</Text>
+              <TextInput
+                onFocus={() => {
+                  setOption("email");
+                }}
+                onBlur={() => setOption("")}
+                placeholder="Адреса електронної пошти"
+                placeholderTextColor="#bdbdbd"
+                onChangeText={(value) => {
+                  setState((prevState) => ({ ...prevState, email: value }));
+                }}
+                value={state.email}
+                style={[
+                  styles.formInput,
+                  option === "email" && styles.inputFocus,
+                ]}
+              />
+              <View style={styles.passwordInput}>
+                <TextInput
+                  onFocus={() => {
+                    setOption("password");
+                  }}
+                  onBlur={() => setOption("")}
+                  secureTextEntry={isHidePassword}
+                  placeholder="Пароль"
+                  placeholderTextColor="#bdbdbd"
+                  onChangeText={(value) => {
+                    setState((prevState) => ({
+                      ...prevState,
+                      password: value,
+                    }));
+                  }}
+                  value={state.password}
+                  style={[
+                    styles.formInput,
+                    option === "password" && styles.inputFocus,
+                  ]}
+                />
+                <Text
+                  onPress={toggleHidePassword}
+                  style={styles.inscriptiption}
+                >
+                  {isHidePassword ? "Показати" : "Сховати"}
+                </Text>
+              </View>
+              <TouchableHighlight onPress={keyboardHide} style={styles.button}>
+                <Text style={styles.buttonText}>Увійти</Text>
+              </TouchableHighlight>
+              <Text style={styles.formEndText}>
+                Немає акаунту?{" "}
+                <Text
+                  style={{ textDecorationLine: "underline" }}
+                  onPress={() => navigation.navigate("Register")}
+                >
+                  Зареєструватися
+                </Text>
+              </Text>
+            </View>
+          </KeyboardAvoidingView>
+        </ImageBackground>
       </View>
-    </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     width: "100%",
+    justifyContent: "flex-end",
   },
   forPhoto: {
     top: -60,
@@ -159,5 +185,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
+  },
+  image: {
+    flex: 1,
   },
 });

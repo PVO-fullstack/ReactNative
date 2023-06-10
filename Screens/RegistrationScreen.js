@@ -7,8 +7,11 @@ import {
   KeyboardAvoidingView,
   TouchableHighlight,
   Keyboard,
+  TouchableWithoutFeedback,
+  ImageBackground,
 } from "react-native";
 import { EvilIcons } from "@expo/vector-icons";
+import bg from "../img/Photo_BG.jpg";
 
 const initialState = {
   login: "",
@@ -16,7 +19,7 @@ const initialState = {
   password: "",
 };
 
-export default function RegistrationScreens({ setlogin }) {
+export default function RegistrationScreens({ navigation }) {
   const [isHidePassword, setIsHidePassword] = useState(true);
   const [option, setOption] = useState("");
   const [state, setState] = useState(initialState);
@@ -32,83 +35,109 @@ export default function RegistrationScreens({ setlogin }) {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS == "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={-70}
-    >
-      <View style={styles.form}>
-        <Text style={styles.title}>Реєстрація</Text>
-        <TextInput
-          onFocus={() => {
-            setOption("login");
-          }}
-          onBlur={() => setOption("")}
-          placeholder="Логін"
-          placeholderTextColor="#bdbdbd"
-          onChangeText={(value) => {
-            setState((prevState) => ({ ...prevState, login: value }));
-          }}
-          value={state.login}
-          style={[styles.formInput, option === "login" && styles.inputFocus]}
-        />
-        <TextInput
-          onFocus={() => {
-            setOption("email");
-          }}
-          onBlur={() => setOption("")}
-          placeholder="Адреса електронної пошти"
-          placeholderTextColor="#bdbdbd"
-          onChangeText={(value) => {
-            setState((prevState) => ({ ...prevState, email: value }));
-          }}
-          value={state.email}
-          style={[styles.formInput, option === "email" && styles.inputFocus]}
-        />
-        <View style={styles.passwordInput}>
-          <TextInput
-            onFocus={() => {
-              setOption("password");
-            }}
-            onBlur={() => setOption("")}
-            secureTextEntry={isHidePassword}
-            placeholder="Пароль"
-            placeholderTextColor="#bdbdbd"
-            onChangeText={(value) => {
-              setState((prevState) => ({ ...prevState, password: value }));
-            }}
-            value={state.password}
-            style={[
-              styles.formInput,
-              option === "password" && styles.inputFocus,
-            ]}
-          />
-          <Text onPress={toggleHidePassword} style={styles.inscriptiption}>
-            {isHidePassword ? "Показати" : "Сховати"}
-          </Text>
-        </View>
-        <TouchableHighlight onPress={keyboardHide} style={styles.button}>
-          <Text style={styles.buttonText}>Зареєструватися</Text>
-        </TouchableHighlight>
-        <Text onPress={() => setlogin(true)} style={styles.formEndText}>
-          Вже є акаунт? Увійти
-        </Text>
-        <View style={styles.forPhoto}>
-          <EvilIcons
-            style={styles.plus}
-            name="plus"
-            size={24}
-            color="#FF6C00"
-          />
-        </View>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={styles.container}>
+        <ImageBackground style={styles.image} resizeMode="cover" source={bg}>
+          <KeyboardAvoidingView
+            style={styles.container}
+            behavior={Platform.OS == "ios" ? "padding" : "height"}
+            keyboardVerticalOffset={-170}
+          >
+            <View style={styles.form}>
+              <Text style={styles.title}>Реєстрація</Text>
+              <TextInput
+                onFocus={() => {
+                  setOption("login");
+                }}
+                onBlur={() => setOption("")}
+                placeholder="Логін"
+                placeholderTextColor="#bdbdbd"
+                onChangeText={(value) => {
+                  setState((prevState) => ({ ...prevState, login: value }));
+                }}
+                value={state.login}
+                style={[
+                  styles.formInput,
+                  option === "login" && styles.inputFocus,
+                ]}
+              />
+              <TextInput
+                onFocus={() => {
+                  setOption("email");
+                }}
+                onBlur={() => setOption("")}
+                placeholder="Адреса електронної пошти"
+                placeholderTextColor="#bdbdbd"
+                onChangeText={(value) => {
+                  setState((prevState) => ({ ...prevState, email: value }));
+                }}
+                value={state.email}
+                style={[
+                  styles.formInput,
+                  option === "email" && styles.inputFocus,
+                ]}
+              />
+              <View style={styles.passwordInput}>
+                <TextInput
+                  onFocus={() => {
+                    setOption("password");
+                  }}
+                  onBlur={() => setOption("")}
+                  secureTextEntry={isHidePassword}
+                  placeholder="Пароль"
+                  placeholderTextColor="#bdbdbd"
+                  onChangeText={(value) => {
+                    setState((prevState) => ({
+                      ...prevState,
+                      password: value,
+                    }));
+                  }}
+                  value={state.password}
+                  style={[
+                    styles.formInput,
+                    option === "password" && styles.inputFocus,
+                  ]}
+                />
+                <Text
+                  onPress={toggleHidePassword}
+                  style={styles.inscriptiption}
+                >
+                  {isHidePassword ? "Показати" : "Сховати"}
+                </Text>
+              </View>
+              <TouchableHighlight onPress={keyboardHide} style={styles.button}>
+                <Text style={styles.buttonText}>Зареєструватися</Text>
+              </TouchableHighlight>
+              <Text style={styles.formEndText}>
+                Вже є акаунт?{" "}
+                <Text
+                  onPress={() => navigation.navigate("Login")}
+                  style={{ textDecorationLine: "underline" }}
+                >
+                  Увійти
+                </Text>
+              </Text>
+              <View style={styles.forPhoto}>
+                <EvilIcons
+                  style={styles.plus}
+                  name="plus"
+                  size={24}
+                  color="#FF6C00"
+                />
+              </View>
+            </View>
+          </KeyboardAvoidingView>
+        </ImageBackground>
       </View>
-    </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     width: "100%",
+    justifyContent: "flex-end",
   },
   forPhoto: {
     top: -60,
@@ -187,5 +216,8 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 81,
     left: 107,
+  },
+  image: {
+    flex: 1,
   },
 });
