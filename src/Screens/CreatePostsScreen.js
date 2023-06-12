@@ -11,6 +11,7 @@ import {
 import { MaterialIcons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 import nature from "../../img/nature.jpg";
+import { ScrollView } from "react-native-gesture-handler";
 
 function CreatePostsScreen() {
   const [photo, setPhoto] = useState({});
@@ -20,7 +21,10 @@ function CreatePostsScreen() {
   const confirm = name !== "" && place !== "";
 
   return (
-    <View style={styles.conteiner}>
+    <ScrollView
+      style={styles.conteiner}
+      contentContainerStyle={{ marginHorizontal: 16 }}
+    >
       <KeyboardAvoidingView
         style={{ flex: 1, justifyContent: "flex-end" }}
         behavior={Platform.OS == "ios" ? "padding" : "height"}
@@ -114,17 +118,18 @@ function CreatePostsScreen() {
           </View>
         </View>
       </KeyboardAvoidingView>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   conteiner: {
     flex: 1,
-    alignItems: "center",
+    // alignItems: "center",
     backgroundColor: "#ffffff",
   },
   photo: {
+    // flex: 1,
     justifyContent: "center",
     alignItems: "center",
     marginTop: 32,
