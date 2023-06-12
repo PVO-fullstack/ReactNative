@@ -1,43 +1,23 @@
-import React from "react";
-import { View, StyleSheet } from "react-native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import React, { useState } from "react";
+import { TouchableOpacity, View, StyleSheet } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import PostsScreeen from "./Screens/PostsScreen";
-import CreatePostsScreen from "./Screens/CreatePostsScreen";
-import ProfileScreen from "./Screens/ProfileScreen";
-import RegistrationScreens from "./Screens/RegistrationScreen";
-import LoginScreen from "./Screens/LoginScreen";
-import { Feather } from "@expo/vector-icons";
+import PostsScreeen from "../Screens/PostsScreen";
+import CreatePostsScreen from "../Screens/CreatePostsScreen";
+import ProfileScreen from "../Screens/ProfileScreen";
 
-const AuthStack = createNativeStackNavigator();
+import { Feather } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+
 const Tabs = createBottomTabNavigator();
 
-export const router = (isAuth) => {
-  if (!isAuth) {
-    return (
-      <AuthStack.Navigator>
-        <AuthStack.Screen
-          options={{
-            headerShown: false,
-          }}
-          name="Register"
-          component={RegistrationScreens}
-        />
-        <AuthStack.Screen
-          options={{
-            headerShown: false,
-          }}
-          name="Login"
-          component={LoginScreen}
-        />
-      </AuthStack.Navigator>
-    );
-  }
+export const BottomNavigation = () => {
+  const navigation = useNavigation();
+
   return (
     <Tabs.Navigator
       screenOptions={{
         tabBarShowLabel: false,
-        tabBarStyle: { paddingHorizontal: 60 },
+        tabBarStyle: { paddingHorizontal: 60, height: 83, paddingBottom: 30 },
       }}
     >
       <Tabs.Screen
@@ -49,12 +29,14 @@ export const router = (isAuth) => {
           headerTitleAlign: "center",
           headerTitleStyle: { color: "#212121" },
           headerRight: () => (
-            <Feather
-              style={{ marginRight: 10 }}
-              name="log-out"
-              size={24}
-              color="#BDBDBD"
-            />
+            <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+              <Feather
+                style={{ marginRight: 10 }}
+                name="log-out"
+                size={24}
+                color="#BDBDBD"
+              />
+            </TouchableOpacity>
           ),
         }}
         name="Posts"
@@ -62,21 +44,32 @@ export const router = (isAuth) => {
       />
       <Tabs.Screen
         options={{
-          tabBarIcon: ({ focused, size, color }) => (
-            <View style={[styles.tabBar, focused && styles.tabBarFocused]}>
+          tabBarIcon: () => (
+            <TouchableOpacity
+              style={styles.tabBar}
+              onPress={() => navigation.navigate("CreatePostsScreen")}
+            >
+              {/* <View style={[styles.tabBar, focused && styles.tabBarFocused]}>
+               {focused ? ( */}
+              {/* <Feather name="trash-2" size={24} color="#BDBDBD" /> */}
+
               <Feather name="plus" size={24} color="#fff" />
-            </View>
+              {/* )}
+            </View>  */}
+            </TouchableOpacity>
           ),
-          headerTitle: "Створити пост",
+          headerTitle: "Створити публікацію",
           headerTitleStyle: { color: "#212121" },
           headerTitleAlign: "center",
-          headerRight: () => (
-            <Feather
-              style={{ marginRight: 10 }}
-              name="log-out"
-              size={24}
-              color="#BDBDBD"
-            />
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <Feather
+                style={{ marginLeft: 16 }}
+                name="arrow-left"
+                size={24}
+                color="#BDBDBD"
+              />
+            </TouchableOpacity>
           ),
         }}
         name="CreatePosts"
@@ -117,8 +110,5 @@ const styles = StyleSheet.create({
     backgroundColor: "#ff6c00",
     justifyContent: "center",
     alignItems: "center",
-  },
-  tabBarFocused: {
-    backgroundColor: "blue",
   },
 });

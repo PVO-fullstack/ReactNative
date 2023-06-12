@@ -10,22 +10,25 @@ import {
   TouchableWithoutFeedback,
   ImageBackground,
 } from "react-native";
-import bg from "../img/Photo_BG.jpg";
+import bg from "../../img/Photo_BG.jpg";
+import { useNavigation } from "@react-navigation/native";
 
 const initialState = {
   email: "",
   password: "",
 };
 
-export default function LoginScreen({ navigation }) {
+export default function LoginScreen() {
   const [isHidePassword, setIsHidePassword] = useState(true);
   const [option, setOption] = useState("");
   const [state, setState] = useState(initialState);
+  const navigation = useNavigation();
 
   const keyboardHide = () => {
     Keyboard.dismiss();
     console.log(state);
     setState(initialState);
+    navigation.navigate("Home");
   };
 
   const toggleHidePassword = () => {

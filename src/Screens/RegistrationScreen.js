@@ -11,7 +11,8 @@ import {
   ImageBackground,
 } from "react-native";
 import { EvilIcons } from "@expo/vector-icons";
-import bg from "../img/Photo_BG.jpg";
+import bg from "../../img/Photo_BG.jpg";
+import { useNavigation } from "@react-navigation/native";
 
 const initialState = {
   login: "",
@@ -19,10 +20,11 @@ const initialState = {
   password: "",
 };
 
-export default function RegistrationScreens({ navigation }) {
+export default function RegistrationScreens() {
   const [isHidePassword, setIsHidePassword] = useState(true);
   const [option, setOption] = useState("");
   const [state, setState] = useState(initialState);
+  const navigation = useNavigation();
 
   const keyboardHide = () => {
     Keyboard.dismiss();
