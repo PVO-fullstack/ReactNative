@@ -7,6 +7,7 @@ import ProfileScreen from "../Screens/ProfileScreen";
 
 import { Feather } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import { UserCamera } from "../component/Camera";
 
 const Tabs = createBottomTabNavigator();
 
@@ -27,7 +28,7 @@ export const BottomNavigation = () => {
               <Feather
                 name="grid"
                 size={24}
-                color={focused ? "#ffffff" : "rgba(33, 33, 33, 0.8)"}
+                color={focused ? "#ffffff" : "#212121cc"}
               />
             </View>
           ),
@@ -59,7 +60,7 @@ export const BottomNavigation = () => {
                 <Feather
                   name="plus"
                   size={24}
-                  color={focused ? "#ffffff" : "rgba(33, 33, 33, 0.8)"}
+                  color={focused ? "#ffffff" : "#212121cc"}
                 />
               </View>
             </TouchableOpacity>
@@ -88,7 +89,7 @@ export const BottomNavigation = () => {
               <Feather
                 name="user"
                 size={24}
-                color={focused ? "#ffffff" : "rgba(33, 33, 33, 0.8)"}
+                color={focused ? "#ffffff" : "#212121cc"}
               />
             </View>
           ),

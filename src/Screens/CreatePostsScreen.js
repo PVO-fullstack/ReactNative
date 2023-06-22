@@ -1,24 +1,44 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   StyleSheet,
   View,
-  Image,
   Text,
   TextInput,
   TouchableOpacity,
   KeyboardAvoidingView,
 } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
-import nature from "../../img/nature.jpg";
 import { ScrollView } from "react-native-gesture-handler";
+import { UserCamera } from "../component/Camera";
+import { useNavigation } from "@react-navigation/native";
+import * as Location from "expo-location";
 
 function CreatePostsScreen() {
-  const [photo, setPhoto] = useState({});
   const [state, setState] = useState({ name: "", place: "" });
-
+  const [photo, setPhoto] = useState(null);
+  const [location, setlocation] = useState(null);
   const { name, place } = state;
   const confirm = name !== "" && place !== "";
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    (async () => {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        console.log("Permission to access location was denied");
+      }
+      const { coords } = await Location.getCurrentPositionAsync({});
+      setlocation(coords);
+    })();
+  }, []);
+
+  const takePhoto = async (data) => {
+    setPhoto(data);
+  };
+
+  const handleCreatePost = () => {
+    navigation.navigate("Posts", { photo, state, location });
+  };
 
   return (
     <ScrollView
@@ -26,22 +46,12 @@ function CreatePostsScreen() {
       contentContainerStyle={{ marginHorizontal: 16 }}
     >
       <KeyboardAvoidingView
-        style={{ flex: 1, justifyContent: "flex-end" }}
+        style={styles.keyboard}
         behavior={Platform.OS == "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={-150}
+        keyboardVerticalOffset={-250}
       >
-        <View style={{ marginBottom: 34, marginHorizontal: 16 }}>
-          <View style={styles.photo}>
-            {photo && <Image source={nature}></Image>}
-            <View style={[styles.elips, photo && styles.elipsInPhoto]}>
-              <MaterialIcons
-                name="camera-alt"
-                size={24}
-                color={photo ? "#ffffff" : "#BDBDBD"}
-              />
-            </View>
-          </View>
-
+        <View>
+          <UserCamera takePhoto={takePhoto} style={styles.photo}></UserCamera>
           <Text style={styles.textUnderPhoto}>
             {photo ? "Редагувати фото" : "Завантажте фото"}
           </Text>
@@ -54,21 +64,10 @@ function CreatePostsScreen() {
                   setState((prevState) => ({ ...prevState, name: value }));
                 }}
                 value={state.name}
-                style={{
-                  borderBottomWidth: 1,
-                  borderBottomColor: "#E8E8E8",
-                  marginTop: 48,
-                  paddingBottom: 15,
-                  fontSize: 16,
-                }}
+                style={styles.photoName}
               />
             </View>
-            <View
-              style={{
-                justifyContent: "center",
-                marginTop: 32,
-              }}
-            >
+            <View style={styles.locationConteiner}>
               <TextInput
                 placeholder="Місцевість..."
                 placeholderTextColor="#BDBDBD"
@@ -76,16 +75,10 @@ function CreatePostsScreen() {
                   setState((prevState) => ({ ...prevState, place: value }));
                 }}
                 value={state.place}
-                style={{
-                  borderBottomWidth: 1,
-                  borderBottomColor: "#E8E8E8",
-                  paddingLeft: 28,
-                  paddingBottom: 15,
-                  fontSize: 16,
-                }}
+                style={styles.location}
               />
               <Feather
-                style={{ position: "absolute", paddingBottom: 15 }}
+                style={styles.locationIcon}
                 name="map-pin"
                 size={24}
                 color="#BDBDBD"
@@ -94,7 +87,8 @@ function CreatePostsScreen() {
           </View>
 
           <TouchableOpacity
-            style={[styles.button, photo && confirm && styles.confirmBtn]}
+            onPress={handleCreatePost}
+            style={[styles.button, confirm && styles.confirmBtn]}
           >
             <Text
               style={[
@@ -105,13 +99,7 @@ function CreatePostsScreen() {
               Опубліковати
             </Text>
           </TouchableOpacity>
-          <View
-            style={{
-              flex: 1,
-              justifyContent: "flex-end",
-              alignItems: "center",
-            }}
-          >
+          <View style={styles.deleteBtn}>
             <View style={styles.delete}>
               <Feather name="trash-2" size={24} color="#BDBDBD" />
             </View>
@@ -125,30 +113,34 @@ function CreatePostsScreen() {
 const styles = StyleSheet.create({
   conteiner: {
     flex: 1,
-    // alignItems: "center",
     backgroundColor: "#ffffff",
   },
-  photo: {
-    // flex: 1,
+  keyboard: { flex: 1, justifyContent: "flex-end" },
+  photoName: {
+    borderBottomWidth: 1,
+    borderBottomColor: "#E8E8E8",
+    marginTop: 48,
+    paddingBottom: 15,
+    fontSize: 16,
+  },
+  locationConteiner: {
     justifyContent: "center",
-    alignItems: "center",
     marginTop: 32,
-    width: 343,
-    height: 240,
-    backgroundColor: "#F6F6F6",
-    borderColor: "#E8E8E8",
-    borderWidth: 1,
   },
-  elipsInPhoto: {
-    backgroundColor: "rgba(255, 255, 255, 0.3)",
+  location: {
+    borderBottomWidth: 1,
+    borderBottomColor: "#E8E8E8",
+    paddingLeft: 28,
+    paddingBottom: 15,
+    fontSize: 16,
   },
-  elips: {
+  locationIcon: {
     position: "absolute",
-    backgroundColor: "#ffffff",
-    width: 60,
-    height: 60,
-    borderRadius: 50,
-    justifyContent: "center",
+    paddingBottom: 15,
+  },
+  deleteBtn: {
+    flex: 1,
+    justifyContent: "flex-end",
     alignItems: "center",
   },
   textUnderPhoto: {
@@ -157,7 +149,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   button: {
-    // width: 343,s
     borderRadius: 100,
     backgroundColor: "#F6F6F6",
     alignItems: "center",
@@ -186,7 +177,37 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#F6F6F6",
-    // marginBottom: 34,
+  },
+  container: {
+    flex: 1,
+    justifyContent: "center",
+  },
+  camera: {
+    flex: 1,
+    height: 240,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  snap: {
+    color: "#fff",
+  },
+  snapContainer: {
+    flex: 1,
+    position: "absolute",
+    backgroundColor: "#ffffff",
+    width: 60,
+    height: 60,
+    borderRadius: 50,
+    justifyContent: "center",
+    alignItems: "center",
+    alignSelf: "center",
+  },
+  takePhotoContainer: {
+    position: "absolute",
+    top: 50,
+    left: 10,
+    borderColor: "#fff",
+    borderWidth: 1,
   },
 });
 

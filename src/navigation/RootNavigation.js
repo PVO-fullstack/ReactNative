@@ -3,8 +3,9 @@ import RegistrationScreens from "../Screens/RegistrationScreen";
 import LoginScreen from "../Screens/LoginScreen";
 import Home from "../Screens/Home";
 import { createStackNavigator } from "@react-navigation/stack";
-import { useNavigation } from "@react-navigation/native";
 import CreatePostsScreen from "../Screens/CreatePostsScreen";
+import CommentsScreen from "../Screens/CommentsScreen";
+import MapScreen from "../Screens/MapScreen";
 
 const AuthStack = createStackNavigator();
 
@@ -38,6 +39,20 @@ export const RootNavigation = () => {
         }}
         name="CreatePostsScreen"
         component={CreatePostsScreen}
+      />
+      <AuthStack.Screen
+        options={{
+          title: "Comments",
+        }}
+        name="Comments"
+        component={CommentsScreen}
+      />
+      <AuthStack.Screen
+        options={{
+          title: "Map",
+        }}
+        name="Map"
+        component={MapScreen}
       />
     </AuthStack.Navigator>
   );
