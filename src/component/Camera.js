@@ -1,14 +1,22 @@
 import React, { useEffect } from "react";
 import { Camera } from "expo-camera";
 import { useState } from "react";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Image,
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import * as MediaLibrary from "expo-media-library";
 
-export const UserCamera = ({ takePhoto, photo }) => {
+export const UserCamera = ({ takePhoto }) => {
   const [newPhoto, setNewPhoto] = useState(null);
   const [cameraRef, setCameraRef] = useState(null);
   const [hasPermission, setHasPermission] = useState(null);
+  const [isLoader, setIsLoader] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -28,10 +36,12 @@ export const UserCamera = ({ takePhoto, photo }) => {
 
   const handleTakePhoto = async () => {
     if (cameraRef) {
+      setIsLoader(true);
       const { uri } = await cameraRef.takePictureAsync();
       await MediaLibrary.createAssetAsync(uri);
       setNewPhoto(uri);
       takePhoto(uri);
+      setIsLoader(false);
     }
   };
 
@@ -45,14 +55,20 @@ export const UserCamera = ({ takePhoto, photo }) => {
           </View>
         </View>
       ) : (
-        <Camera style={styles.camera} ref={setCameraRef}>
-          <TouchableOpacity
-            onPress={handleTakePhoto}
-            style={styles.snapContainer}
-          >
-            <MaterialIcons name="camera-alt" size={24} color={"#BDBDBD"} />
-          </TouchableOpacity>
-        </Camera>
+        <View style={[!hasPermission && styles.camera]}>
+          <Camera style={styles.camera} ref={setCameraRef}>
+            {isLoader ? (
+              <ActivityIndicator size="large" color="#FF6C00" />
+            ) : (
+              <TouchableOpacity
+                onPress={handleTakePhoto}
+                style={styles.snapContainer}
+              >
+                <MaterialIcons name="camera-alt" size={24} color={"#BDBDBD"} />
+              </TouchableOpacity>
+            )}
+          </Camera>
+        </View>
       )}
     </View>
   );
@@ -61,14 +77,17 @@ export const UserCamera = ({ takePhoto, photo }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
   },
   imgConteiner: {
     justifyContent: "center",
   },
   camera: {
-    flex: 1,
     height: 240,
+    backgroundColor: "#F6F6F6",
+    borderRadius: 8,
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "#E8E8E8",
     justifyContent: "center",
     alignItems: "center",
   },

@@ -51,23 +51,31 @@ export default function PostsScreeen({ route }) {
               <View style={styles.post}>
                 <Image style={styles.camera} source={{ uri: item.photo }} />
                 <Text style={styles.postText}>{item.state.name}</Text>
-                <View style={styles.description}>
-                  <Feather
+                <View style={styles.descriptionConteiner}>
+                  <TouchableOpacity
+                    style={styles.description}
                     onPress={() => navigation.navigate("Comments", { item })}
-                    style={{ marginRight: 9 }}
-                    name="message-circle"
-                    size={24}
-                    color="#BDBDBD"
-                  />
-                  <Text style={styles.postText}>0</Text>
-                  <Feather
+                  >
+                    <Feather
+                      style={styles.message}
+                      name="message-circle"
+                      size={24}
+                      color="#BDBDBD"
+                    />
+                    <Text style={styles.postText}>0</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.description}
                     onPress={() => navigation.navigate("Map", { item })}
-                    style={{ marginLeft: 49, marginRight: 13 }}
-                    name="map-pin"
-                    size={24}
-                    color="#BDBDBD"
-                  />
-                  <Text style={styles.postText}>{item.state.place}</Text>
+                  >
+                    <Feather
+                      style={styles.map}
+                      name="map-pin"
+                      size={24}
+                      color="#BDBDBD"
+                    />
+                    <Text style={styles.postText}>{item.state.place}</Text>
+                  </TouchableOpacity>
                 </View>
               </View>
             )}
@@ -125,9 +133,21 @@ const styles = StyleSheet.create({
   postText: {
     color: "#212121",
     fontSize: 16,
+    marginTop: 8,
   },
   description: {
     flexDirection: "row",
-    marginTop: 10,
+    alignItems: "baseline",
+  },
+  descriptionConteiner: {
+    marginTop: 8,
+    flexDirection: "row",
+  },
+  message: {
+    marginRight: 9,
+  },
+  map: {
+    marginLeft: 49,
+    marginRight: 13,
   },
 });

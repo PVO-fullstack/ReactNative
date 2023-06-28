@@ -1,18 +1,24 @@
-import React, { useState } from "react";
+import React from "react";
 import { TouchableOpacity, View, StyleSheet } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import PostsScreeen from "../Screens/PostsScreen";
 import CreatePostsScreen from "../Screens/CreatePostsScreen";
 import ProfileScreen from "../Screens/ProfileScreen";
-
 import { Feather } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { UserCamera } from "../component/Camera";
+import { useAuth } from "../component/AuthContext";
 
 const Tabs = createBottomTabNavigator();
 
 export const BottomNavigation = () => {
   const navigation = useNavigation();
+
+  const { logOut } = useAuth();
+
+  const handleLogOutPress = async () => {
+    await logOut();
+    navigation.navigate("Login");
+  };
 
   return (
     <Tabs.Navigator
@@ -36,7 +42,7 @@ export const BottomNavigation = () => {
           headerTitleAlign: "center",
           headerTitleStyle: { color: "#212121" },
           headerRight: () => (
-            <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+            <TouchableOpacity onPress={handleLogOutPress}>
               <Feather
                 style={{ marginRight: 10 }}
                 name="log-out"

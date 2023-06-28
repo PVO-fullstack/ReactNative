@@ -1,14 +1,15 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   View,
   Text,
+  Keyboard,
   TextInput,
   TouchableOpacity,
   KeyboardAvoidingView,
+  TouchableWithoutFeedback,
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
-import { ScrollView } from "react-native-gesture-handler";
 import { UserCamera } from "../component/Camera";
 import { useNavigation } from "@react-navigation/native";
 import * as Location from "expo-location";
@@ -41,81 +42,90 @@ function CreatePostsScreen() {
   };
 
   return (
-    <ScrollView
-      style={styles.conteiner}
-      contentContainerStyle={{ marginHorizontal: 16 }}
-    >
-      <KeyboardAvoidingView
-        style={styles.keyboard}
-        behavior={Platform.OS == "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={-250}
-      >
-        <View>
-          <UserCamera takePhoto={takePhoto} style={styles.photo}></UserCamera>
-          <Text style={styles.textUnderPhoto}>
-            {photo ? "Редагувати фото" : "Завантажте фото"}
-          </Text>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={styles.container}>
+        <KeyboardAvoidingView
+          style={styles.keyboard}
+          behavior={Platform.OS == "ios" ? "padding" : "height"}
+          keyboardVerticalOffset={-100}
+        >
           <View>
-            <View>
-              <TextInput
-                placeholder="Назва..."
-                placeholderTextColor="#BDBDBD"
-                onChangeText={(value) => {
-                  setState((prevState) => ({ ...prevState, name: value }));
-                }}
-                value={state.name}
-                style={styles.photoName}
-              />
+            <View style={styles.photo}>
+              <UserCamera
+                takePhoto={takePhoto}
+                style={styles.photo}
+              ></UserCamera>
             </View>
-            <View style={styles.locationConteiner}>
-              <TextInput
-                placeholder="Місцевість..."
-                placeholderTextColor="#BDBDBD"
-                onChangeText={(value) => {
-                  setState((prevState) => ({ ...prevState, place: value }));
-                }}
-                value={state.place}
-                style={styles.location}
-              />
-              <Feather
-                style={styles.locationIcon}
-                name="map-pin"
-                size={24}
-                color="#BDBDBD"
-              />
-            </View>
-          </View>
-
-          <TouchableOpacity
-            onPress={handleCreatePost}
-            style={[styles.button, confirm && styles.confirmBtn]}
-          >
-            <Text
-              style={[
-                styles.buttonText,
-                photo && confirm && styles.confirmBtnText,
-              ]}
-            >
-              Опубліковати
+            <Text style={styles.textUnderPhoto}>
+              {photo ? "Редагувати фото" : "Завантажте фото"}
             </Text>
-          </TouchableOpacity>
+            <View>
+              <View>
+                <TextInput
+                  placeholder="Назва..."
+                  placeholderTextColor="#BDBDBD"
+                  onChangeText={(value) => {
+                    setState((prevState) => ({ ...prevState, name: value }));
+                  }}
+                  value={state.name}
+                  style={styles.photoName}
+                />
+              </View>
+              <View style={styles.locationConteiner}>
+                <TextInput
+                  placeholder="Місцевість..."
+                  placeholderTextColor="#BDBDBD"
+                  onChangeText={(value) => {
+                    setState((prevState) => ({ ...prevState, place: value }));
+                  }}
+                  value={state.place}
+                  style={styles.location}
+                />
+                <Feather
+                  style={styles.locationIcon}
+                  name="map-pin"
+                  size={24}
+                  color="#BDBDBD"
+                />
+              </View>
+            </View>
+
+            <TouchableOpacity
+              onPress={handleCreatePost}
+              style={[styles.button, confirm && styles.confirmBtn]}
+            >
+              <Text
+                style={[
+                  styles.buttonText,
+                  photo && confirm && styles.confirmBtnText,
+                ]}
+              >
+                Опубліковати
+              </Text>
+            </TouchableOpacity>
+          </View>
           <View style={styles.deleteBtn}>
             <View style={styles.delete}>
               <Feather name="trash-2" size={24} color="#BDBDBD" />
             </View>
           </View>
-        </View>
-      </KeyboardAvoidingView>
-    </ScrollView>
+        </KeyboardAvoidingView>
+      </View>
+    </TouchableWithoutFeedback>
   );
 }
 
 const styles = StyleSheet.create({
-  conteiner: {
+  container: {
     flex: 1,
     backgroundColor: "#ffffff",
   },
-  keyboard: { flex: 1, justifyContent: "flex-end" },
+  keyboard: {
+    marginTop: 32,
+    marginHorizontal: 16,
+    flex: 1,
+    justifyContent: "flex-end",
+  },
   photoName: {
     borderBottomWidth: 1,
     borderBottomColor: "#E8E8E8",
@@ -139,9 +149,11 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
   },
   deleteBtn: {
-    flex: 1,
+    flexGrow: 1,
     justifyContent: "flex-end",
     alignItems: "center",
+    marginBottom: 34,
+    marginTop: 10,
   },
   textUnderPhoto: {
     marginTop: 8,
@@ -157,7 +169,6 @@ const styles = StyleSheet.create({
     paddingLeft: 32,
     paddingRight: 32,
     marginTop: 32,
-    marginBottom: 120,
     fontSize: 16,
   },
   confirmBtn: {
@@ -177,37 +188,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#F6F6F6",
+    // flexGrow: 1,
   },
-  container: {
-    flex: 1,
-    justifyContent: "center",
-  },
-  camera: {
-    flex: 1,
+  photo: {
     height: 240,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  snap: {
-    color: "#fff",
-  },
-  snapContainer: {
-    flex: 1,
-    position: "absolute",
-    backgroundColor: "#ffffff",
-    width: 60,
-    height: 60,
-    borderRadius: 50,
-    justifyContent: "center",
-    alignItems: "center",
-    alignSelf: "center",
-  },
-  takePhotoContainer: {
-    position: "absolute",
-    top: 50,
-    left: 10,
-    borderColor: "#fff",
-    borderWidth: 1,
+    borderRadius: 8,
+    overflow: "hidden",
   },
 });
 

@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import bg from "../../img/Photo_BG.jpg";
 import { useNavigation } from "@react-navigation/native";
+import { useAuth } from "../component/AuthContext";
 
 const initialState = {
   email: "",
@@ -23,11 +24,13 @@ export default function LoginScreen() {
   const [option, setOption] = useState("");
   const [state, setState] = useState(initialState);
   const navigation = useNavigation();
+  const { logIn } = useAuth();
 
-  const keyboardHide = () => {
+  const keyboardHide = async () => {
     Keyboard.dismiss();
     console.log(state);
     setState(initialState);
+    await logIn();
     navigation.navigate("Home");
   };
 
