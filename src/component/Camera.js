@@ -12,20 +12,27 @@ import {
 import { MaterialIcons } from "@expo/vector-icons";
 import * as MediaLibrary from "expo-media-library";
 
-export const UserCamera = ({ takePhoto }) => {
+export const UserCamera = ({ takePhoto, photo }) => {
   const [newPhoto, setNewPhoto] = useState(null);
   const [cameraRef, setCameraRef] = useState(null);
   const [hasPermission, setHasPermission] = useState(null);
   const [isLoader, setIsLoader] = useState(false);
 
   useEffect(() => {
+    if (!photo) {
+      setNewPhoto(null);
+    }
     (async () => {
-      const { status } = await Camera.requestCameraPermissionsAsync();
-      await MediaLibrary.requestPermissionsAsync();
+      try {
+        const { status } = await Camera.requestCameraPermissionsAsync();
+        await MediaLibrary.requestPermissionsAsync();
 
-      setHasPermission(status === "granted");
+        setHasPermission(status === "granted");
+      } catch (error) {
+        console.log(error);
+      }
     })();
-  }, []);
+  }, [photo]);
 
   if (hasPermission === null) {
     return <View />;
@@ -35,13 +42,16 @@ export const UserCamera = ({ takePhoto }) => {
   }
 
   const handleTakePhoto = async () => {
-    if (cameraRef) {
-      setIsLoader(true);
-      const { uri } = await cameraRef.takePictureAsync();
-      await MediaLibrary.createAssetAsync(uri);
-      setNewPhoto(uri);
-      takePhoto(uri);
-      setIsLoader(false);
+    try {
+      if (cameraRef) {
+        // setIsLoader(true);
+        const { uri } = await cameraRef.takePictureAsync();
+        await MediaLibrary.createAssetAsync(uri);
+        setNewPhoto(uri);
+        takePhoto(uri);
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 

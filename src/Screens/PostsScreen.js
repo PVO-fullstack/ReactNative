@@ -93,8 +93,8 @@ const styles = StyleSheet.create({
   },
   userData: {
     flex: 1,
-    justifyContent: "flex-end",
-    alignItems: "center",
+    justifyContent: "center",
+    marginLeft: 8,
   },
   posts: {
     flex: 1,

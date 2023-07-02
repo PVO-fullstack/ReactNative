@@ -19,26 +19,36 @@ function CreatePostsScreen() {
   const [photo, setPhoto] = useState(null);
   const [location, setlocation] = useState(null);
   const { name, place } = state;
-  const confirm = name !== "" && place !== "";
+  const confirm = name !== "" && place !== "" && photo;
   const navigation = useNavigation();
 
   useEffect(() => {
     (async () => {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        console.log("Permission to access location was denied");
+      try {
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== "granted") {
+          console.log("Permission to access location was denied");
+        }
+        const { coords } = await Location.getCurrentPositionAsync({});
+        setlocation(coords);
+      } catch (error) {
+        console.log(error);
       }
-      const { coords } = await Location.getCurrentPositionAsync({});
-      setlocation(coords);
     })();
   }, []);
 
-  const takePhoto = async (data) => {
+  const takePhoto = (data) => {
     setPhoto(data);
   };
 
   const handleCreatePost = () => {
+    if (!confirm) return;
     navigation.navigate("Posts", { photo, state, location });
+  };
+
+  const handleDelete = () => {
+    setPhoto(null);
+    setState({ name: "", place: "" });
   };
 
   return (
@@ -52,6 +62,7 @@ function CreatePostsScreen() {
           <View>
             <View style={styles.photo}>
               <UserCamera
+                photo={photo}
                 takePhoto={takePhoto}
                 style={styles.photo}
               ></UserCamera>
@@ -106,7 +117,12 @@ function CreatePostsScreen() {
           </View>
           <View style={styles.deleteBtn}>
             <View style={styles.delete}>
-              <Feather name="trash-2" size={24} color="#BDBDBD" />
+              <Feather
+                onPress={handleDelete}
+                name="trash-2"
+                size={24}
+                color="#BDBDBD"
+              />
             </View>
           </View>
         </KeyboardAvoidingView>

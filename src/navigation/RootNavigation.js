@@ -41,23 +41,25 @@ export const RootNavigation = () => {
             name="Home"
             component={Home}
           />
-          <AuthStack.Screen
+          {/* <AuthStack.Screen
             options={{
               title: "Створити публікацію",
             }}
             name="CreatePostsScreen"
             component={CreatePostsScreen}
-          />
+          /> */}
           <AuthStack.Screen
             options={{
-              title: "Comments",
+              title: "Коментарі",
+              headerTitleAlign: "center",
             }}
             name="Comments"
             component={CommentsScreen}
           />
           <AuthStack.Screen
             options={{
-              title: "Map",
+              title: "Карта",
+              headerTitleAlign: "center",
             }}
             name="Map"
             component={MapScreen}

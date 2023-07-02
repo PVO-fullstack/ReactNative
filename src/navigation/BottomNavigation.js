@@ -16,8 +16,12 @@ export const BottomNavigation = () => {
   const { logOut } = useAuth();
 
   const handleLogOutPress = async () => {
-    await logOut();
-    navigation.navigate("Login");
+    try {
+      await logOut();
+      navigation.navigate("Login");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -58,19 +62,20 @@ export const BottomNavigation = () => {
       <Tabs.Screen
         options={{
           tabBarIcon: ({ focused, size, color }) => (
-            <TouchableOpacity
-              style={[styles.tabBar, focused && styles.tabBarFocused]}
-              onPress={() => navigation.navigate("CreatePostsScreen")}
-            >
-              <View>
-                <Feather
-                  name="plus"
-                  size={24}
-                  color={focused ? "#ffffff" : "#212121cc"}
-                />
-              </View>
-            </TouchableOpacity>
+            // <TouchableOpacity
+            //   style={[styles.tabBar, focused && styles.tabBarFocused]}
+            //   onPress={() => navigation.navigate("CreatePostsScreen")}
+            // >
+            <View style={[styles.tabBar, focused && styles.tabBarFocused]}>
+              <Feather
+                name="plus"
+                size={24}
+                color={focused ? "#ffffff" : "#212121cc"}
+              />
+            </View>
+            // </TouchableOpacity>
           ),
+          tabBarStyle: { display: "none" },
           headerTitle: "Створити публікацію",
           headerTitleStyle: { color: "#212121" },
           headerTitleAlign: "center",

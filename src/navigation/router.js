@@ -1,5 +1,4 @@
 import React from "react";
-
 import { RootNavigation } from "./RootNavigation";
 import { BottomNavigation } from "./BottomNavigation";
 

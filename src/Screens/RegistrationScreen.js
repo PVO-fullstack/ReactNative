@@ -207,6 +207,7 @@ const styles = StyleSheet.create({
     marginBottom: 78,
   },
   form: {
+    // marginHorizontal: 16,
     alignItems: "center",
     height: 549,
     left: 0,

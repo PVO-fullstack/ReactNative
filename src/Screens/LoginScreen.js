@@ -27,11 +27,15 @@ export default function LoginScreen() {
   const { logIn } = useAuth();
 
   const keyboardHide = async () => {
-    Keyboard.dismiss();
-    console.log(state);
-    setState(initialState);
-    await logIn();
-    navigation.navigate("Home");
+    try {
+      Keyboard.dismiss();
+      console.log(state);
+      setState(initialState);
+      await logIn();
+      navigation.navigate("Home");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const toggleHidePassword = () => {
