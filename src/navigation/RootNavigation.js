@@ -21,15 +21,15 @@ export const RootNavigation = () => {
             options={{
               headerShown: false,
             }}
-            name="Register"
-            component={RegistrationScreens}
+            name="Login"
+            component={LoginScreen}
           />
           <AuthStack.Screen
             options={{
               headerShown: false,
             }}
-            name="Login"
-            component={LoginScreen}
+            name="Register"
+            component={RegistrationScreens}
           />
         </>
       ) : (

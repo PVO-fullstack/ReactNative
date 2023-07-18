@@ -18,7 +18,10 @@ export const UserCamera = ({ takePhoto, photo }) => {
   const [hasPermission, setHasPermission] = useState(null);
   const [isLoader, setIsLoader] = useState(false);
 
+console.log(newPhoto, hasPermission, isLoader)
+
   useEffect(() => {
+    setIsLoader(false)
     if (!photo) {
       setNewPhoto(null);
     }
@@ -44,7 +47,7 @@ export const UserCamera = ({ takePhoto, photo }) => {
   const handleTakePhoto = async () => {
     try {
       if (cameraRef) {
-        // setIsLoader(true);
+        setIsLoader(true);
         const { uri } = await cameraRef.takePictureAsync();
         await MediaLibrary.createAssetAsync(uri);
         setNewPhoto(uri);
@@ -55,32 +58,45 @@ export const UserCamera = ({ takePhoto, photo }) => {
     }
   };
 
+  const handleCameraReady = () => {
+    setIsLoader(false);
+  };
+
   return (
     <View style={styles.container}>
-      {newPhoto ? (
-        <View style={styles.imgConteiner}>
-          <Image source={{ uri: newPhoto }} style={styles.camera} />
-          <View style={styles.snapContainer}>
-            <MaterialIcons name="camera-alt" size={24} color={"#ffffff"} />
+        {newPhoto ? (
+          <View style={styles.imgConteiner}>
+            <Image source={{ uri: newPhoto }} style={styles.camera} />
+            <View style={styles.snapContainer}>
+              <MaterialIcons name="camera-alt" size={24} color={"#ffffff"} />
+            </View>
           </View>
-        </View>
-      ) : (
-        <View style={[!hasPermission && styles.camera]}>
-          <Camera style={styles.camera} ref={setCameraRef}>
-            {isLoader ? (
-              <ActivityIndicator size="large" color="#FF6C00" />
-            ) : (
-              <TouchableOpacity
-                onPress={handleTakePhoto}
-                style={styles.snapContainer}
+        ) : (
+            <View style={[!hasPermission && styles.camera]}>
+              <Camera
+                onCameraReady={handleCameraReady}
+                style={styles.camera}
+                ref={setCameraRef}
               >
-                <MaterialIcons name="camera-alt" size={24} color={"#BDBDBD"} />
-              </TouchableOpacity>
-            )}
-          </Camera>
-        </View>
-      )}
-    </View>
+                {isLoader ? (
+                  <ActivityIndicator size="large" color="#FF6C00" />
+                ) : (
+                  <TouchableOpacity
+                    onPress={handleTakePhoto}
+                    style={styles.snapContainer}
+                  >
+                    <MaterialIcons
+                      name="camera-alt"
+                      size={24}
+                      color={"#BDBDBD"}
+                    />
+                  </TouchableOpacity>
+                )}
+              </Camera>
+            </View>
+          )
+        }
+      </View>
   );
 };
 

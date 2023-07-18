@@ -23,8 +23,6 @@ export default function PostsScreeen({ route }) {
   const [photos, setPhotos] = useState([]);
   const post = route.params;
 
-  console.log("post", post);
-
   useEffect(() => {
     if (post) {
       setPhotos((prev) => [...prev, post]);
@@ -45,10 +43,17 @@ export default function PostsScreeen({ route }) {
         </View>
         {photos.length > 0 && (
           <FlatList
+            showsVerticalScrollIndicator={false}
             data={photos}
             keyExtractor={(item, index) => index.toString()}
-            renderItem={({ item }) => (
-              <View style={styles.post}>
+            renderItem={({ item, index }) => (
+              <View
+                style={
+                  photos.length > 1 && photos.length === index + 1
+                    ? styles.lastPost
+                    : styles.post
+                }
+              >
                 <Image style={styles.camera} source={{ uri: item.photo }} />
                 <Text style={styles.postText}>{item.state.name}</Text>
                 <View style={styles.descriptionConteiner}>
@@ -149,5 +154,9 @@ const styles = StyleSheet.create({
   map: {
     marginLeft: 49,
     marginRight: 13,
+  },
+  lastPost: {
+    marginTop: 32,
+    marginBottom: 20,
   },
 });

@@ -18,8 +18,6 @@ function CreatePostsScreen() {
   const [state, setState] = useState({ name: "", place: "" });
   const [photo, setPhoto] = useState(null);
   const [location, setlocation] = useState(null);
-  const { name, place } = state;
-  const confirm = name !== "" && place !== "" && photo;
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -42,8 +40,9 @@ function CreatePostsScreen() {
   };
 
   const handleCreatePost = () => {
-    if (!confirm) return;
+    if (!photo) return;
     navigation.navigate("Posts", { photo, state, location });
+    handleDelete();
   };
 
   const handleDelete = () => {
@@ -64,8 +63,7 @@ function CreatePostsScreen() {
               <UserCamera
                 photo={photo}
                 takePhoto={takePhoto}
-                style={styles.photo}
-              ></UserCamera>
+              />
             </View>
             <Text style={styles.textUnderPhoto}>
               {photo ? "Редагувати фото" : "Завантажте фото"}
@@ -103,14 +101,9 @@ function CreatePostsScreen() {
 
             <TouchableOpacity
               onPress={handleCreatePost}
-              style={[styles.button, confirm && styles.confirmBtn]}
+              style={[styles.button, photo && styles.confirmBtn]}
             >
-              <Text
-                style={[
-                  styles.buttonText,
-                  photo && confirm && styles.confirmBtnText,
-                ]}
-              >
+              <Text style={[styles.buttonText, photo && styles.confirmBtnText]}>
                 Опубліковати
               </Text>
             </TouchableOpacity>
@@ -204,7 +197,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#F6F6F6",
-    // flexGrow: 1,
   },
   photo: {
     height: 240,
