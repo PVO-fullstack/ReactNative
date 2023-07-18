@@ -18,8 +18,6 @@ export const UserCamera = ({ takePhoto, photo }) => {
   const [hasPermission, setHasPermission] = useState(null);
   const [isLoader, setIsLoader] = useState(false);
 
-console.log(newPhoto, hasPermission, isLoader)
-
   useEffect(() => {
     setIsLoader(false)
     if (!photo) {
