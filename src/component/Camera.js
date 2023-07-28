@@ -5,7 +5,6 @@ import {
   Image,
   ActivityIndicator,
   StyleSheet,
-  Text,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -15,11 +14,11 @@ import * as MediaLibrary from "expo-media-library";
 export const UserCamera = ({ takePhoto, photo }) => {
   const [newPhoto, setNewPhoto] = useState(null);
   const [cameraRef, setCameraRef] = useState(null);
-  const [hasPermission, setHasPermission] = useState(null);
+  const [hasPermission, setHasPermission] = useState(false);
   const [isLoader, setIsLoader] = useState(false);
 
   useEffect(() => {
-    setIsLoader(false)
+    setIsLoader(false);
     if (!photo) {
       setNewPhoto(null);
     }
@@ -39,7 +38,13 @@ export const UserCamera = ({ takePhoto, photo }) => {
     return <View />;
   }
   if (hasPermission === false) {
-    return <Text>No access to camera</Text>;
+    return (
+      <View style={styles.camera}>
+        <View style={styles.snapContainer}>
+          <MaterialIcons name="camera-alt" size={24} color={"#BDBDBD"} />
+        </View>
+      </View>
+    );
   }
 
   const handleTakePhoto = async () => {
@@ -56,45 +61,33 @@ export const UserCamera = ({ takePhoto, photo }) => {
     }
   };
 
-  const handleCameraReady = () => {
-    setIsLoader(false);
-  };
-
   return (
     <View style={styles.container}>
-        {newPhoto ? (
-          <View style={styles.imgConteiner}>
-            <Image source={{ uri: newPhoto }} style={styles.camera} />
-            <View style={styles.snapContainer}>
-              <MaterialIcons name="camera-alt" size={24} color={"#ffffff"} />
-            </View>
+      {photo ? (
+        <View style={styles.imgConteiner}>
+          <Image source={{ uri: newPhoto }} style={styles.camera} />
+          <View style={styles.snapContainer}>
+            <MaterialIcons name="camera-alt" size={24} color={"#ffffff"} />
           </View>
-        ) : (
-            <View style={[!hasPermission && styles.camera]}>
-              <Camera
-                onCameraReady={handleCameraReady}
-                style={styles.camera}
-                ref={setCameraRef}
+        </View>
+      ) : (
+        <View>
+          {!hasPermission ? (
+            <View style={styles.camera}></View>
+          ) : (
+            <Camera style={styles.camera} ref={setCameraRef}>
+              {isLoader && <ActivityIndicator size="large" color="#FF6C00" />}
+              <TouchableOpacity
+                onPress={handleTakePhoto}
+                style={isLoader ? styles.isSnap : styles.snapContainer}
               >
-                {isLoader ? (
-                  <ActivityIndicator size="large" color="#FF6C00" />
-                ) : (
-                  <TouchableOpacity
-                    onPress={handleTakePhoto}
-                    style={styles.snapContainer}
-                  >
-                    <MaterialIcons
-                      name="camera-alt"
-                      size={24}
-                      color={"#BDBDBD"}
-                    />
-                  </TouchableOpacity>
-                )}
-              </Camera>
-            </View>
-          )
-        }
-      </View>
+                <MaterialIcons name="camera-alt" size={24} color={"#BDBDBD"} />
+              </TouchableOpacity>
+            </Camera>
+          )}
+        </View>
+      )}
+    </View>
   );
 };
 
@@ -135,5 +128,8 @@ const styles = StyleSheet.create({
     left: 10,
     borderColor: "#fff",
     borderWidth: 1,
+  },
+  isSnap: {
+    display: "none",
   },
 });

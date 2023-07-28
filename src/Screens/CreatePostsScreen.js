@@ -18,10 +18,11 @@ function CreatePostsScreen() {
   const [state, setState] = useState({ name: "", place: "" });
   const [photo, setPhoto] = useState(null);
   const [location, setlocation] = useState(null);
+  const [cameraReady, setCameraReady] = useState(false);
   const navigation = useNavigation();
 
   useEffect(() => {
-    (async () => {
+    const locationCoords = async () => {
       try {
         const { status } = await Location.requestForegroundPermissionsAsync();
         if (status !== "granted") {
@@ -32,11 +33,16 @@ function CreatePostsScreen() {
       } catch (error) {
         console.log(error);
       }
-    })();
+    };
+    locationCoords();
   }, []);
 
   const takePhoto = (data) => {
     setPhoto(data);
+  };
+
+  const isReady = (data) => {
+    setCameraReady(data);
   };
 
   const handleCreatePost = () => {
@@ -63,6 +69,7 @@ function CreatePostsScreen() {
               <UserCamera
                 photo={photo}
                 takePhoto={takePhoto}
+                isReady={isReady}
               />
             </View>
             <Text style={styles.textUnderPhoto}>
@@ -202,6 +209,17 @@ const styles = StyleSheet.create({
     height: 240,
     borderRadius: 8,
     overflow: "hidden",
+  },
+  camera: {
+    flex: 1,
+    height: 240,
+    backgroundColor: "#F6F6F6",
+    borderRadius: 8,
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "#E8E8E8",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 
