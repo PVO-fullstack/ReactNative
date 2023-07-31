@@ -62,10 +62,6 @@ export const BottomNavigation = () => {
       <Tabs.Screen
         options={{
           tabBarIcon: ({ focused, size, color }) => (
-            // <TouchableOpacity
-            //   style={[styles.tabBar, focused && styles.tabBarFocused]}
-            //   onPress={() => navigation.navigate("CreatePostsScreen")}
-            // >
             <View style={[styles.tabBar, focused && styles.tabBarFocused]}>
               <Feather
                 name="plus"
@@ -73,8 +69,8 @@ export const BottomNavigation = () => {
                 color={focused ? "#ffffff" : "#212121cc"}
               />
             </View>
-            // </TouchableOpacity>
           ),
+          unmountOnBlur: true,
           tabBarStyle: { display: "none" },
           headerTitle: "Створити публікацію",
           headerTitleStyle: { color: "#212121" },
@@ -104,17 +100,7 @@ export const BottomNavigation = () => {
               />
             </View>
           ),
-          headerTitle: "Профіль",
-          headerTitleStyle: { color: "#212121" },
-          headerTitleAlign: "center",
-          headerRight: () => (
-            <Feather
-              style={{ marginRight: 10 }}
-              name="log-out"
-              size={24}
-              color="#BDBDBD"
-            />
-          ),
+          headerShown: false,
         }}
         name="Profile"
         component={ProfileScreen}

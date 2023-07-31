@@ -47,6 +47,7 @@ function CreatePostsScreen() {
 
   const handleCreatePost = () => {
     if (!photo) return;
+    navigation.navigate("Profile", { photo, state, location });
     navigation.navigate("Posts", { photo, state, location });
     handleDelete();
   };
@@ -116,12 +117,12 @@ function CreatePostsScreen() {
             </TouchableOpacity>
           </View>
           <View style={styles.deleteBtn}>
-            <View style={styles.delete}>
+            <View style={[styles.delete, photo && styles.deleteActive]}>
               <Feather
                 onPress={handleDelete}
                 name="trash-2"
                 size={24}
-                color="#BDBDBD"
+                color={(photo && "#FFFFFF") || "#BDBDBD"}
               />
             </View>
           </View>
@@ -204,6 +205,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#F6F6F6",
+  },
+  deleteActive: {
+    backgroundColor: "#FF6C00",
   },
   photo: {
     height: 240,
