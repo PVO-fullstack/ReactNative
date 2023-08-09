@@ -6,16 +6,19 @@ import { createStackNavigator } from "@react-navigation/stack";
 import CreatePostsScreen from "../Screens/CreatePostsScreen";
 import CommentsScreen from "../Screens/CommentsScreen";
 import MapScreen from "../Screens/MapScreen";
-import { useAuth } from "../component/AuthContext";
+// import { useAuth } from "../component/AuthContext";
+import { useSelector } from "react-redux";
 
 const AuthStack = createStackNavigator();
 
 export const RootNavigation = () => {
-  const { isAuth } = useAuth();
+  // const { isAuth } = useAuth();
+  const isLogin = useSelector((state) => state.auth.isLogin);
+  console.log("isLogin", isLogin);
 
   return (
     <AuthStack.Navigator>
-      {!isAuth ? (
+      {!isLogin ? (
         <>
           <AuthStack.Screen
             options={{
@@ -41,13 +44,6 @@ export const RootNavigation = () => {
             name="Home"
             component={Home}
           />
-          {/* <AuthStack.Screen
-            options={{
-              title: "Створити публікацію",
-            }}
-            name="CreatePostsScreen"
-            component={CreatePostsScreen}
-          /> */}
           <AuthStack.Screen
             options={{
               title: "Коментарі",

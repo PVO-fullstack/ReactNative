@@ -11,6 +11,7 @@ import {
 import userPhoto from "../../img/foto.jpg";
 import { Feather } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import { useSelector } from "react-redux";
 
 const user = {
   id: 1,
@@ -22,6 +23,8 @@ const user = {
 export default function PostsScreeen({ route }) {
   const [photos, setPhotos] = useState([]);
   const post = route.params;
+  const newUser = useSelector((state) => state.auth.user);
+  console.log("newuser", newUser);
 
   useEffect(() => {
     if (post) {
@@ -37,8 +40,10 @@ export default function PostsScreeen({ route }) {
         <View style={{ flexDirection: "row" }}>
           <Image source={user.photo} />
           <View style={styles.userData}>
-            <Text>{user.email}</Text>
-            <Text>{user.userName}</Text>
+            <Text>{newUser.email}</Text>
+            <Text>{newUser.displayName}</Text>
+            {/* <Text>{user.email}</Text>
+            <Text>{user.userName}</Text> */}
           </View>
         </View>
         {photos.length > 0 && (

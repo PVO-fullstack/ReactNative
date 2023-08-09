@@ -13,6 +13,8 @@ import {
 import { EvilIcons } from "@expo/vector-icons";
 import bg from "../../img/Photo_BG.jpg";
 import { useNavigation } from "@react-navigation/native";
+import { useDispatch, useSelector } from "react-redux";
+import { registerDB } from "../redux/auth/authOperations";
 
 const initialState = {
   login: "",
@@ -25,10 +27,16 @@ export default function RegistrationScreens() {
   const [option, setOption] = useState("");
   const [state, setState] = useState(initialState);
   const navigation = useNavigation();
+  const dispatch = useDispatch();
 
-  const keyboardHide = () => {
+  const keyboardHide = async () => {
     Keyboard.dismiss();
     console.log(state);
+    try {
+      dispatch(registerDB(state));
+    } catch (error) {
+      console.log(error);
+    }
     setState(initialState);
   };
 

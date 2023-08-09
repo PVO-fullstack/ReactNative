@@ -6,22 +6,17 @@ import CreatePostsScreen from "../Screens/CreatePostsScreen";
 import ProfileScreen from "../Screens/ProfileScreen";
 import { Feather } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { useAuth } from "../component/AuthContext";
+import { userLogOut } from "../redux/auth/authOperations";
+import { useDispatch } from "react-redux";
 
 const Tabs = createBottomTabNavigator();
 
 export const BottomNavigation = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
 
-  const { logOut } = useAuth();
-
-  const handleLogOutPress = async () => {
-    try {
-      await logOut();
-      navigation.navigate("Login");
-    } catch (error) {
-      console.log(error);
-    }
+  const handleLogOutPress = () => {
+    dispatch(userLogOut());
   };
 
   return (

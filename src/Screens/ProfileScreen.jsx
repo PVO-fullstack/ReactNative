@@ -12,8 +12,10 @@ import bg from "../../img/Photo_BG.jpg";
 import userPhoto from "../../img/user.jpg";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
-import { useAuth } from "../component/AuthContext";
+// import { useAuth } from "../component/AuthContext";
 import { useNavigation } from "@react-navigation/native";
+import { useDispatch } from "react-redux";
+import { userLogOut } from "../redux/auth/authOperations";
 
 const user = {
   id: 1,
@@ -26,7 +28,8 @@ export default function ProfileScreen({ route }) {
   const [photos, setPhotos] = useState([]);
   const post = route.params;
   const navigation = useNavigation();
-  const { logOut } = useAuth();
+  // const { logOut } = useAuth();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (post) {
@@ -35,12 +38,13 @@ export default function ProfileScreen({ route }) {
   }, [route.params]);
 
   const handleLogOutPress = async () => {
-    try {
-      await logOut();
-      navigation.navigate("Login");
-    } catch (error) {
-      console.log(error);
-    }
+    await dispatch(userLogOut());
+    // try {
+    //   await logOut();
+    //   navigation.navigate("Login");
+    // } catch (error) {
+    //   console.log(error);
+    // }
   };
 
   return (
