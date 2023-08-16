@@ -1,13 +1,15 @@
 import React from "react";
 import { TouchableOpacity, View, StyleSheet } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import PostsScreeen from "../Screens/PostsScreen";
-import CreatePostsScreen from "../Screens/CreatePostsScreen";
-import ProfileScreen from "../Screens/ProfileScreen";
+import PostsScreeen from "../Screens/mainScreens/PostsScreen";
+import CreatePostsScreen from "../Screens/mainScreens/CreatePostsScreen";
+import ProfileScreen from "../Screens/mainScreens/ProfileScreen";
 import { Feather } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { userLogOut } from "../redux/auth/authOperations";
 import { useDispatch } from "react-redux";
+import { RootNavigation } from "./RootNavigation";
+import Home from "../Screens/nestedScreens/Home";
 
 const Tabs = createBottomTabNavigator();
 
@@ -52,7 +54,7 @@ export const BottomNavigation = () => {
           ),
         }}
         name="Posts"
-        component={PostsScreeen}
+        component={Home}
       />
       <Tabs.Screen
         options={{

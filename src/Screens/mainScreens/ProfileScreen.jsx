@@ -8,14 +8,15 @@ import {
   ImageBackground,
   TouchableOpacity,
 } from "react-native";
-import bg from "../../img/Photo_BG.jpg";
-import userPhoto from "../../img/user.jpg";
+import bg from "../../../img/Photo_BG.jpg";
+import userPhoto from "../../../img/user.jpg";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
-// import { useAuth } from "../component/AuthContext";
 import { useNavigation } from "@react-navigation/native";
-import { useDispatch } from "react-redux";
-import { userLogOut } from "../redux/auth/authOperations";
+import { useDispatch, useSelector } from "react-redux";
+import { userLogOut } from "../../redux/auth/authOperations";
+import { collection, query, where, getDocs } from "firebase/firestore";
+import { db } from "../../../firebase/config";
 
 const user = {
   id: 1,
@@ -28,36 +29,52 @@ export default function ProfileScreen({ route }) {
   const [photos, setPhotos] = useState([]);
   const post = route.params;
   const navigation = useNavigation();
-  // const { logOut } = useAuth();
   const dispatch = useDispatch();
+  const newUser = useSelector((state) => state.auth.user);
+
+  const getDataFromFirestore = async () => {
+    const q = query(collection(db, "posts"), where("uid", "==", newUser.uid));
+
+    const querySnapshot = await await getDocs(q);
+    const posts = querySnapshot.docs.map((doc) => ({
+      ...doc.data(),
+      id: doc.id,
+    }));
+    posts.map(async (el) => {
+      setPhotos([]);
+      const id = el.id;
+      const comment = await getDocs(
+        collection(db, "posts", `${id}`, "comments")
+      );
+      const commentsLength = comment.docs.length;
+      setPhotos((prev) => [
+        ...prev,
+        { ...el, countsOfComment: commentsLength },
+      ]);
+    });
+  };
 
   useEffect(() => {
-    if (post) {
-      setPhotos((prev) => [...prev, post]);
-    }
-  }, [route.params]);
+    getDataFromFirestore();
+  }, []);
+
+  console.log("profilePhoto", photos);
 
   const handleLogOutPress = async () => {
     await dispatch(userLogOut());
-    // try {
-    //   await logOut();
-    //   navigation.navigate("Login");
-    // } catch (error) {
-    //   console.log(error);
-    // }
   };
 
   return (
     <ImageBackground style={styles.image} resizeMode="cover" source={bg}>
       <View style={styles.container}>
         <View style={styles.form}>
-          <Text style={styles.title}>{user.userName}</Text>
+          <Text style={styles.title}>{newUser.displayName}</Text>
           <View style={styles.forPhoto}>
-            <ImageBackground
-              source={userPhoto}
+            <Image
+              source={{ uri: newUser.photoURL }}
               resizeMode="cover"
               style={styles.userPhoto}
-            ></ImageBackground>
+            ></Image>
             <MaterialIcons
               name="highlight-remove"
               size={25}
@@ -103,7 +120,9 @@ export default function ProfileScreen({ route }) {
                             size={24}
                             color="#FF6C00"
                           />
-                          <Text style={styles.postText}>0</Text>
+                          <Text style={styles.postText}>
+                            {item.countsOfComment || 0}
+                          </Text>
                         </TouchableOpacity>
                         <View style={styles.description}>
                           <Feather
@@ -223,6 +242,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "flex-end",
     alignContent: "flex-end",
+    paddingBottom: 20,
   },
   lastPost: {
     marginTop: 32,

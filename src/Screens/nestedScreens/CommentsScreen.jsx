@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   View,
@@ -9,6 +9,10 @@ import {
   FlatList,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { writeCommentToFirestore } from "../../firebaseOperations/writeCommentToFirebase";
+import { useSelector } from "react-redux";
+import { collection, getDocs, doc, onSnapshot } from "firebase/firestore";
+import { db } from "../../../firebase/config";
 
 function CommentsScreen({ route }) {
   const [comment, setComment] = useState("");
@@ -22,18 +26,40 @@ function CommentsScreen({ route }) {
   };
   const currentTime = new Date().toLocaleString("uk-UA", options);
 
-  const {
-    item: { photo },
-  } = route.params;
+  const { photoURL, displayName } = useSelector((state) => state.auth.user);
+
+  const { item } = route.params;
+
+  console.log("photo", item, photoURL);
+
+  const getDataFromFirestore = async () => {
+    const id = item.id;
+    await onSnapshot(collection(db, "posts", `${id}`, "comments"), (data) => {
+      if (data) {
+        const posts = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+        // console.log("posts", posts);
+        setComments(posts);
+      }
+    });
+  };
+
+  console.log("comments", comments);
+
+  useEffect(() => {
+    getDataFromFirestore();
+  }, []);
 
   const handleClickComment = () => {
-    setComments([...comments, comment]);
+    const id = item.id;
+    console.log("comm", currentTime);
+    writeCommentToFirestore(id, comment, displayName, photoURL, currentTime);
+    // setComments([...comments, comment]);
     setComment("");
   };
 
   return (
     <View style={styles.conteiner}>
-      <Image style={styles.camera} source={{ uri: photo }} />
+      <Image style={styles.camera} source={{ uri: item.photo }} />
       {comments.length > 0 && (
         <FlatList
           style={styles.comments}
@@ -46,18 +72,24 @@ function CommentsScreen({ route }) {
                 index % 2 !== 0 && styles.commentsConteiner2,
               ]}
             >
-              <View style={styles.logo}></View>
+              {/* <View style={styles.logo}> */}
+              <Image
+                style={styles.logo}
+                source={{ uri: item.photoURL || item.displayName }}
+              ></Image>
+              {/* <Text>{item.displayName}</Text> */}
+              {/* </View> */}
               <View
                 style={[styles.comment, index % 2 !== 0 && styles.comment2]}
               >
-                <Text style={styles.commentText}>{item}</Text>
+                <Text style={styles.commentText}>{item.comment}</Text>
                 <Text
                   style={[
                     styles.commentDate,
                     index % 2 !== 0 && styles.commentDate2,
                   ]}
                 >
-                  {currentTime}
+                  {item.currentTime}
                 </Text>
               </View>
             </View>

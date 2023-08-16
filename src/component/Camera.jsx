@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import * as MediaLibrary from "expo-media-library";
+import { uploadPhotoToServer } from "../firebaseOperations/uploadPhotoToFirestore";
 
 export const UserCamera = ({ takePhoto, photo }) => {
   const [newPhoto, setNewPhoto] = useState(null);

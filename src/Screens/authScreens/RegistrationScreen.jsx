@@ -9,35 +9,57 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
   ImageBackground,
+  Button,
+  Image,
 } from "react-native";
-import bg from "../../img/Photo_BG.jpg";
+import * as ImagePicker from "expo-image-picker";
+import { EvilIcons } from "@expo/vector-icons";
+import bg from "../../../img/Photo_BG.jpg";
 import { useNavigation } from "@react-navigation/native";
-// import { useAuth } from "../component/AuthContext";
-import { useDispatch } from "react-redux";
-import { loginDB } from "../redux/auth/authOperations";
+import { useDispatch, useSelector } from "react-redux";
+import { registerDB } from "../../redux/auth/authOperations";
 
 const initialState = {
+  login: "",
   email: "",
   password: "",
+  avatar: "",
 };
 
-export default function LoginScreen() {
+export default function RegistrationScreens() {
   const [isHidePassword, setIsHidePassword] = useState(true);
   const [option, setOption] = useState("");
   const [state, setState] = useState(initialState);
+  const [image, setImage] = useState(null);
   const navigation = useNavigation();
-  // const { logIn } = useAuth();
   const dispatch = useDispatch();
 
+  const pickImage = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    console.log(result);
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+      setState((prevState) => ({ ...prevState, avatar: result.assets[0].uri }));
+    }
+  };
+
   const keyboardHide = async () => {
+    Keyboard.dismiss();
+    console.log(state);
     try {
-      Keyboard.dismiss();
-      console.log(state);
-      dispatch(loginDB(state));
-      setState(initialState);
+      dispatch(registerDB(state));
     } catch (error) {
       console.log(error);
     }
+    setState(initialState);
   };
 
   const toggleHidePassword = () => {
@@ -51,10 +73,26 @@ export default function LoginScreen() {
           <KeyboardAvoidingView
             style={styles.container}
             behavior={Platform.OS == "ios" ? "padding" : "height"}
-            keyboardVerticalOffset={-240}
+            keyboardVerticalOffset={-170}
           >
             <View style={styles.form}>
-              <Text style={styles.title}>Увійти</Text>
+              <Text style={styles.title}>Реєстрація</Text>
+              <TextInput
+                onFocus={() => {
+                  setOption("login");
+                }}
+                onBlur={() => setOption("")}
+                placeholder="Логін"
+                placeholderTextColor="#bdbdbd"
+                onChangeText={(value) => {
+                  setState((prevState) => ({ ...prevState, login: value }));
+                }}
+                value={state.login}
+                style={[
+                  styles.formInput,
+                  option === "login" && styles.inputFocus,
+                ]}
+              />
               <TextInput
                 onFocus={() => {
                   setOption("email");
@@ -100,17 +138,40 @@ export default function LoginScreen() {
                 </Text>
               </View>
               <TouchableHighlight onPress={keyboardHide} style={styles.button}>
-                <Text style={styles.buttonText}>Увійти</Text>
+                <Text style={styles.buttonText}>Зареєструватися</Text>
               </TouchableHighlight>
               <Text style={styles.formEndText}>
-                Немає акаунту?{" "}
+                Вже є акаунт?{" "}
                 <Text
+                  onPress={() => navigation.navigate("Login")}
                   style={{ textDecorationLine: "underline" }}
-                  onPress={() => navigation.navigate("Register")}
                 >
-                  Зареєструватися
+                  Увійти
                 </Text>
               </Text>
+              <View style={styles.forPhoto}>
+                <EvilIcons
+                  style={styles.plus}
+                  name="plus"
+                  size={24}
+                  color="#FF6C00"
+                  onPress={pickImage}
+                />
+                {image && (
+                  <Image
+                    source={{ uri: image }}
+                    style={{ width: 120, height: 120 }}
+                  />
+                )}
+              </View>
+              {/* <View style={styles.forPhoto}>
+                <EvilIcons
+                  style={styles.plus}
+                  name="plus"
+                  size={24}
+                  color="#FF6C00"
+                />
+              </View> */}
             </View>
           </KeyboardAvoidingView>
         </ImageBackground>
@@ -134,7 +195,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
   },
   title: {
-    marginTop: 32,
+    marginTop: 82,
     marginBottom: 33,
     fontSize: 30,
     fontWeight: 500,
@@ -188,15 +249,21 @@ const styles = StyleSheet.create({
     color: "#1B4371",
     fontSize: 16,
     fontFamily: "Roboto",
-    marginBottom: 144,
+    marginBottom: 78,
   },
   form: {
+    // marginHorizontal: 16,
     alignItems: "center",
-    height: 489,
+    height: 549,
     left: 0,
     backgroundColor: "#ffffff",
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
+  },
+  plus: {
+    position: "absolute",
+    top: 81,
+    left: 107,
   },
   image: {
     flex: 1,

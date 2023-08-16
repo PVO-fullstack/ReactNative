@@ -10,34 +10,34 @@ import {
   TouchableWithoutFeedback,
   ImageBackground,
 } from "react-native";
-import { EvilIcons } from "@expo/vector-icons";
-import bg from "../../img/Photo_BG.jpg";
+import bg from "../../../img/Photo_BG.jpg";
 import { useNavigation } from "@react-navigation/native";
-import { useDispatch, useSelector } from "react-redux";
-import { registerDB } from "../redux/auth/authOperations";
+// import { useAuth } from "../component/AuthContext";
+import { useDispatch } from "react-redux";
+import { loginDB } from "../../redux/auth/authOperations";
 
 const initialState = {
-  login: "",
   email: "",
   password: "",
 };
 
-export default function RegistrationScreens() {
+export default function LoginScreen() {
   const [isHidePassword, setIsHidePassword] = useState(true);
   const [option, setOption] = useState("");
   const [state, setState] = useState(initialState);
   const navigation = useNavigation();
+  // const { logIn } = useAuth();
   const dispatch = useDispatch();
 
   const keyboardHide = async () => {
-    Keyboard.dismiss();
-    console.log(state);
     try {
-      dispatch(registerDB(state));
+      Keyboard.dismiss();
+      console.log(state);
+      dispatch(loginDB(state));
+      setState(initialState);
     } catch (error) {
       console.log(error);
     }
-    setState(initialState);
   };
 
   const toggleHidePassword = () => {
@@ -51,26 +51,10 @@ export default function RegistrationScreens() {
           <KeyboardAvoidingView
             style={styles.container}
             behavior={Platform.OS == "ios" ? "padding" : "height"}
-            keyboardVerticalOffset={-170}
+            keyboardVerticalOffset={-240}
           >
             <View style={styles.form}>
-              <Text style={styles.title}>Реєстрація</Text>
-              <TextInput
-                onFocus={() => {
-                  setOption("login");
-                }}
-                onBlur={() => setOption("")}
-                placeholder="Логін"
-                placeholderTextColor="#bdbdbd"
-                onChangeText={(value) => {
-                  setState((prevState) => ({ ...prevState, login: value }));
-                }}
-                value={state.login}
-                style={[
-                  styles.formInput,
-                  option === "login" && styles.inputFocus,
-                ]}
-              />
+              <Text style={styles.title}>Увійти</Text>
               <TextInput
                 onFocus={() => {
                   setOption("email");
@@ -116,25 +100,17 @@ export default function RegistrationScreens() {
                 </Text>
               </View>
               <TouchableHighlight onPress={keyboardHide} style={styles.button}>
-                <Text style={styles.buttonText}>Зареєструватися</Text>
+                <Text style={styles.buttonText}>Увійти</Text>
               </TouchableHighlight>
               <Text style={styles.formEndText}>
-                Вже є акаунт?{" "}
+                Немає акаунту?{" "}
                 <Text
-                  onPress={() => navigation.navigate("Login")}
                   style={{ textDecorationLine: "underline" }}
+                  onPress={() => navigation.navigate("Register")}
                 >
-                  Увійти
+                  Зареєструватися
                 </Text>
               </Text>
-              <View style={styles.forPhoto}>
-                <EvilIcons
-                  style={styles.plus}
-                  name="plus"
-                  size={24}
-                  color="#FF6C00"
-                />
-              </View>
             </View>
           </KeyboardAvoidingView>
         </ImageBackground>
@@ -158,7 +134,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
   },
   title: {
-    marginTop: 82,
+    marginTop: 32,
     marginBottom: 33,
     fontSize: 30,
     fontWeight: 500,
@@ -212,21 +188,15 @@ const styles = StyleSheet.create({
     color: "#1B4371",
     fontSize: 16,
     fontFamily: "Roboto",
-    marginBottom: 78,
+    marginBottom: 144,
   },
   form: {
-    // marginHorizontal: 16,
     alignItems: "center",
-    height: 549,
+    height: 489,
     left: 0,
     backgroundColor: "#ffffff",
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
-  },
-  plus: {
-    position: "absolute",
-    top: 81,
-    left: 107,
   },
   image: {
     flex: 1,

@@ -8,10 +8,13 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
-import userPhoto from "../../img/foto.jpg";
+import userPhoto from "../../../img/foto.jpg";
 import { Feather } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
+
+import { collection, getDocs, doc, onSnapshot } from "firebase/firestore";
+import { db } from "../../../firebase/config";
 
 const user = {
   id: 1,
@@ -20,17 +23,35 @@ const user = {
   userName: "Natali Romanova",
 };
 
-export default function PostsScreeen({ route }) {
+export default function Home({ route }) {
   const [photos, setPhotos] = useState([]);
-  const post = route.params;
   const newUser = useSelector((state) => state.auth.user);
-  console.log("newuser", newUser);
+
+  console.log("photo", newUser.photoURL);
+
+  const getDataFromFirestore = async () => {
+    await onSnapshot(collection(db, "posts"), async (data) => {
+      if (data) {
+        const posts = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+        posts.map(async (el) => {
+          setPhotos([]);
+          const id = el.id;
+          const comment = await getDocs(
+            collection(db, "posts", `${id}`, "comments")
+          );
+          const commentsLength = comment.docs.length;
+          setPhotos((prev) => [
+            ...prev,
+            { ...el, countsOfComment: commentsLength },
+          ]);
+        });
+      }
+    });
+  };
 
   useEffect(() => {
-    if (post) {
-      setPhotos((prev) => [...prev, post]);
-    }
-  }, [route.params]);
+    getDataFromFirestore();
+  }, []);
 
   const navigation = useNavigation();
 
@@ -38,12 +59,11 @@ export default function PostsScreeen({ route }) {
     <SafeAreaView style={styles.conteiner}>
       <View style={styles.posts}>
         <View style={{ flexDirection: "row" }}>
-          <Image source={user.photo} />
+          {/* <Image source={user.photo} /> */}
+          <Image style={styles.photo} source={{ uri: newUser.photoURL }} />
           <View style={styles.userData}>
             <Text>{newUser.email}</Text>
             <Text>{newUser.displayName}</Text>
-            {/* <Text>{user.email}</Text>
-            <Text>{user.userName}</Text> */}
           </View>
         </View>
         {photos.length > 0 && (
@@ -72,7 +92,9 @@ export default function PostsScreeen({ route }) {
                       size={24}
                       color="#BDBDBD"
                     />
-                    <Text style={styles.postText}>0</Text>
+                    <Text style={styles.postText}>
+                      {item.countsOfComment || 0}
+                    </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={styles.description}
@@ -115,6 +137,13 @@ const styles = StyleSheet.create({
   post: {
     marginTop: 32,
     flex: 1,
+  },
+  photo: {
+    width: 60,
+    height: 60,
+    // flex: 1,
+    // width: "100%",
+    backgroundColor: "#0553",
   },
   container: {
     flex: 1,

@@ -8,31 +8,42 @@ export const authSlise = createSlice({
       uid: null,
       displayName: null,
       email: null,
-      uid: null,
-      photoUrl: null,
+      photoURL: null,
     },
     isLogin: null,
   },
-  reducers: {},
+  reducers: {
+    updateUserProfile: (state, { payload }) => {
+      state.user.uid = payload.user.uid;
+      state.user.email = payload.user.email;
+      state.user.displayName = payload.user.displayName;
+      state.user.photoURL = payload.user.photoURL;
+      state.isLogin = true;
+    },
+  },
   extraReducers: (builder) =>
     builder
       .addCase(registerDB.fulfilled, (state, { payload }) => {
         state.user.uid = payload.uid;
         state.user.email = payload.email;
         state.user.displayName = payload.displayName;
+        state.user.photoURL = payload.photoURL;
         state.isLogin = true;
       })
       .addCase(loginDB.fulfilled, (state, { payload }) => {
         state.user.uid = payload.uid;
         state.user.email = payload.email;
         state.user.displayName = payload.displayName;
+        state.user.photoURL = payload.photoURL;
         state.isLogin = true;
       })
       .addCase(userLogOut.fulfilled, (state, { payload }) => {
         (state.isLogin = null),
           (state.user.displayName = null),
           (state.user.email = null),
-          (state.user.photoUrl = null),
+          (state.user.photoURL = null),
           (state.user.uid = null);
       }),
 });
+
+export const { updateUserProfile } = authSlise.actions;

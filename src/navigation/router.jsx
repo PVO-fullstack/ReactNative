@@ -4,8 +4,8 @@ import { BottomNavigation } from "./BottomNavigation";
 import { useSelector } from "react-redux";
 
 export const router = (isAuth) => {
-  if (!isAuth) {
-    return <RootNavigation isAuth={isAuth} />;
-  }
-  return <BottomNavigation />;
+  // if (!isAuth) {
+  return <RootNavigation />;
+  // }
+  // return <BottomNavigation />;
 };

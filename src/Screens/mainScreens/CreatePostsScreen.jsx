@@ -10,9 +10,11 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
-import { UserCamera } from "../component/Camera";
+import { UserCamera } from "../../component/Camera";
 import { useNavigation } from "@react-navigation/native";
 import * as Location from "expo-location";
+import { writeDataToFirestore } from "../../firebaseOperations/writeDataToFirestore";
+import { useSelector } from "react-redux";
 
 function CreatePostsScreen() {
   const [state, setState] = useState({ name: "", place: "" });
@@ -20,6 +22,7 @@ function CreatePostsScreen() {
   const [location, setlocation] = useState(null);
   const [cameraReady, setCameraReady] = useState(false);
   const navigation = useNavigation();
+  const { displayName, uid } = useSelector((state) => state.auth.user);
 
   useEffect(() => {
     const locationCoords = async () => {
@@ -37,7 +40,7 @@ function CreatePostsScreen() {
     locationCoords();
   }, []);
 
-  const takePhoto = (data) => {
+  const takePhoto = async (data) => {
     setPhoto(data);
   };
 
@@ -47,8 +50,8 @@ function CreatePostsScreen() {
 
   const handleCreatePost = () => {
     if (!photo) return;
-    navigation.navigate("Profile", { photo, state, location });
-    navigation.navigate("Posts", { photo, state, location });
+    writeDataToFirestore(photo, state, location, displayName, uid);
+    navigation.navigate("Posts");
     handleDelete();
   };
 
