@@ -37,13 +37,10 @@ function CommentsScreen({ route }) {
     await onSnapshot(collection(db, "posts", `${id}`, "comments"), (data) => {
       if (data) {
         const posts = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
-        // console.log("posts", posts);
         setComments(posts);
       }
     });
   };
-
-  console.log("comments", comments);
 
   useEffect(() => {
     getDataFromFirestore();
@@ -51,9 +48,7 @@ function CommentsScreen({ route }) {
 
   const handleClickComment = () => {
     const id = item.id;
-    console.log("comm", currentTime);
     writeCommentToFirestore(id, comment, displayName, photoURL, currentTime);
-    // setComments([...comments, comment]);
     setComment("");
   };
 

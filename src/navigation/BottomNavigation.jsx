@@ -8,8 +8,6 @@ import { Feather } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { userLogOut } from "../redux/auth/authOperations";
 import { useDispatch } from "react-redux";
-import { RootNavigation } from "./RootNavigation";
-import Home from "../Screens/nestedScreens/Home";
 
 const Tabs = createBottomTabNavigator();
 
@@ -54,7 +52,7 @@ export const BottomNavigation = () => {
           ),
         }}
         name="Posts"
-        component={Home}
+        component={PostsScreeen}
       />
       <Tabs.Screen
         options={{
@@ -88,6 +86,7 @@ export const BottomNavigation = () => {
       />
       <Tabs.Screen
         options={{
+          unmountOnBlur: true,
           tabBarIcon: ({ focused, size, color }) => (
             <View style={[styles.tabBar, focused && styles.tabBarFocused]}>
               <Feather

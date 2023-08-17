@@ -23,11 +23,9 @@ const user = {
   userName: "Natali Romanova",
 };
 
-export default function Home({ route }) {
+export default function PostsScreeen({ route }) {
   const [photos, setPhotos] = useState([]);
   const newUser = useSelector((state) => state.auth.user);
-
-  console.log("photo", newUser.photoURL);
 
   const getDataFromFirestore = async () => {
     await onSnapshot(collection(db, "posts"), async (data) => {
@@ -141,6 +139,7 @@ const styles = StyleSheet.create({
   photo: {
     width: 60,
     height: 60,
+    borderRadius: 16,
     // flex: 1,
     // width: "100%",
     backgroundColor: "#0553",

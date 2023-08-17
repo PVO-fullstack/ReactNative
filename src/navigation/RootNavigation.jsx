@@ -1,12 +1,11 @@
 import React from "react";
 import RegistrationScreens from "../Screens/authScreens/RegistrationScreen";
 import LoginScreen from "../Screens/authScreens/LoginScreen";
-import Home from "../Screens/nestedScreens/Home";
 import { createStackNavigator } from "@react-navigation/stack";
 import CommentsScreen from "../Screens/nestedScreens/CommentsScreen";
 import MapScreen from "../Screens/nestedScreens/MapScreen";
 import { useSelector } from "react-redux";
-import PostsScreeen from "../Screens/mainScreens/PostsScreen";
+import { BottomNavigation } from "./BottomNavigation";
 
 const AuthStack = createStackNavigator();
 
@@ -39,7 +38,7 @@ export const RootNavigation = () => {
               headerShown: false,
             }}
             name="Home"
-            component={PostsScreeen}
+            component={BottomNavigation}
           />
           <AuthStack.Screen
             options={{

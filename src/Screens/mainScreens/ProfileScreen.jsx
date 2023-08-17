@@ -8,15 +8,23 @@ import {
   ImageBackground,
   TouchableOpacity,
 } from "react-native";
+import * as ImagePicker from "expo-image-picker";
 import bg from "../../../img/Photo_BG.jpg";
 import userPhoto from "../../../img/user.jpg";
+import { EvilIcons } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
-import { userLogOut } from "../../redux/auth/authOperations";
+import {
+  changeAvatar,
+  deleteAvatar,
+  userLogOut,
+} from "../../redux/auth/authOperations";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "../../../firebase/config";
+import { deleteFileFromStorage } from "../../firebaseOperations/deletePhotoFromStorage";
+// import { uploadPhotoToServer } from "../../firebaseOperations/uploadPhotoToFirestore";
 
 const user = {
   id: 1,
@@ -31,6 +39,7 @@ export default function ProfileScreen({ route }) {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const newUser = useSelector((state) => state.auth.user);
+  const avatar = useSelector((state) => state.auth.user.photoURL);
 
   const getDataFromFirestore = async () => {
     const q = query(collection(db, "posts"), where("uid", "==", newUser.uid));
@@ -58,7 +67,23 @@ export default function ProfileScreen({ route }) {
     getDataFromFirestore();
   }, []);
 
-  console.log("profilePhoto", photos);
+  const pickImage = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      dispatch(changeAvatar(result.assets[0].uri));
+    }
+  };
+
+  const deleteUserAvatar = () => {
+    dispatch(deleteAvatar(avatar));
+  };
 
   const handleLogOutPress = async () => {
     await dispatch(userLogOut());
@@ -75,12 +100,23 @@ export default function ProfileScreen({ route }) {
               resizeMode="cover"
               style={styles.userPhoto}
             ></Image>
-            <MaterialIcons
-              name="highlight-remove"
-              size={25}
-              color="#E8E8E8"
-              style={styles.plus}
-            />
+            {!newUser.photoURL ? (
+              <EvilIcons
+                style={styles.plus}
+                name="plus"
+                size={25}
+                color="#FF6C00"
+                onPress={pickImage}
+              />
+            ) : (
+              <MaterialIcons
+                name="highlight-remove"
+                size={25}
+                color="#E8E8E8"
+                style={styles.plus}
+                onPress={deleteUserAvatar}
+              />
+            )}
           </View>
           <TouchableOpacity style={styles.logOff} onPress={handleLogOutPress}>
             <Feather

@@ -32,7 +32,6 @@ export default function LoginScreen() {
   const keyboardHide = async () => {
     try {
       Keyboard.dismiss();
-      console.log(state);
       dispatch(loginDB(state));
       setState(initialState);
     } catch (error) {
@@ -61,6 +60,7 @@ export default function LoginScreen() {
                 }}
                 onBlur={() => setOption("")}
                 placeholder="Адреса електронної пошти"
+                autoCapitalize="none"
                 placeholderTextColor="#bdbdbd"
                 onChangeText={(value) => {
                   setState((prevState) => ({ ...prevState, email: value }));
@@ -80,6 +80,7 @@ export default function LoginScreen() {
                   secureTextEntry={isHidePassword}
                   placeholder="Пароль"
                   placeholderTextColor="#bdbdbd"
+                  autoCapitalize="none"
                   onChangeText={(value) => {
                     setState((prevState) => ({
                       ...prevState,
@@ -102,12 +103,12 @@ export default function LoginScreen() {
               <TouchableHighlight onPress={keyboardHide} style={styles.button}>
                 <Text style={styles.buttonText}>Увійти</Text>
               </TouchableHighlight>
-              <Text style={styles.formEndText}>
+              <Text
+                style={styles.formEndText}
+                onPress={() => navigation.navigate("Register")}
+              >
                 Немає акаунту?{" "}
-                <Text
-                  style={{ textDecorationLine: "underline" }}
-                  onPress={() => navigation.navigate("Register")}
-                >
+                <Text style={{ textDecorationLine: "underline" }}>
                   Зареєструватися
                 </Text>
               </Text>
@@ -134,6 +135,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
   },
   title: {
+    alignSelf: "center",
     marginTop: 32,
     marginBottom: 33,
     fontSize: 30,
@@ -141,7 +143,7 @@ const styles = StyleSheet.create({
     color: "#212121",
   },
   formInput: {
-    width: 343,
+    marginHorizontal: 16,
     height: 50,
     paddingLeft: 32,
     backgroundColor: "#F6F6F6",
@@ -157,17 +159,17 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
     borderColor: "#FF6C00",
   },
-  passwordInput: {
-    alignItems: "flex-end",
-  },
+
   inscriptiption: {
     position: "absolute",
-    padding: 16,
+    alignSelf: "flex-end",
+    paddingTop: 16,
+    paddingRight: 32,
     color: "#1B4371",
     fontSize: 16,
   },
   button: {
-    width: 343,
+    marginHorizontal: 20,
     borderRadius: 100,
     backgroundColor: "#FF6C00",
     alignItems: "center",
@@ -185,13 +187,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   formEndText: {
+    alignSelf: "center",
     color: "#1B4371",
     fontSize: 16,
     fontFamily: "Roboto",
     marginBottom: 144,
   },
   form: {
-    alignItems: "center",
     height: 489,
     left: 0,
     backgroundColor: "#ffffff",

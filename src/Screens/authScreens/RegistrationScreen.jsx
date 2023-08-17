@@ -14,6 +14,7 @@ import {
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { EvilIcons } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 import bg from "../../../img/Photo_BG.jpg";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
@@ -43,17 +44,18 @@ export default function RegistrationScreens() {
       quality: 1,
     });
 
-    console.log(result);
-
     if (!result.canceled) {
       setImage(result.assets[0].uri);
       setState((prevState) => ({ ...prevState, avatar: result.assets[0].uri }));
     }
   };
 
+  const removeImage = () => {
+    setImage(null);
+  };
+
   const keyboardHide = async () => {
     Keyboard.dismiss();
-    console.log(state);
     try {
       dispatch(registerDB(state));
     } catch (error) {
@@ -84,6 +86,7 @@ export default function RegistrationScreens() {
                 onBlur={() => setOption("")}
                 placeholder="Логін"
                 placeholderTextColor="#bdbdbd"
+                autoCapitalize="none"
                 onChangeText={(value) => {
                   setState((prevState) => ({ ...prevState, login: value }));
                 }}
@@ -100,6 +103,7 @@ export default function RegistrationScreens() {
                 onBlur={() => setOption("")}
                 placeholder="Адреса електронної пошти"
                 placeholderTextColor="#bdbdbd"
+                autoCapitalize="none"
                 onChangeText={(value) => {
                   setState((prevState) => ({ ...prevState, email: value }));
                 }}
@@ -118,6 +122,7 @@ export default function RegistrationScreens() {
                   secureTextEntry={isHidePassword}
                   placeholder="Пароль"
                   placeholderTextColor="#bdbdbd"
+                  autoCapitalize="none"
                   onChangeText={(value) => {
                     setState((prevState) => ({
                       ...prevState,
@@ -140,38 +145,35 @@ export default function RegistrationScreens() {
               <TouchableHighlight onPress={keyboardHide} style={styles.button}>
                 <Text style={styles.buttonText}>Зареєструватися</Text>
               </TouchableHighlight>
-              <Text style={styles.formEndText}>
+              <Text
+                style={styles.formEndText}
+                onPress={() => navigation.navigate("Login")}
+              >
                 Вже є акаунт?{" "}
-                <Text
-                  onPress={() => navigation.navigate("Login")}
-                  style={{ textDecorationLine: "underline" }}
-                >
-                  Увійти
-                </Text>
+                <Text style={{ textDecorationLine: "underline" }}>Увійти</Text>
               </Text>
               <View style={styles.forPhoto}>
-                <EvilIcons
-                  style={styles.plus}
-                  name="plus"
-                  size={24}
-                  color="#FF6C00"
-                  onPress={pickImage}
-                />
                 {image && (
-                  <Image
-                    source={{ uri: image }}
-                    style={{ width: 120, height: 120 }}
+                  <Image source={{ uri: image }} style={styles.avatar} />
+                )}
+                {!image ? (
+                  <EvilIcons
+                    style={styles.plus}
+                    name="plus"
+                    size={24}
+                    color="#FF6C00"
+                    onPress={pickImage}
+                  />
+                ) : (
+                  <MaterialIcons
+                    name="highlight-remove"
+                    size={25}
+                    color="#E8E8E8"
+                    style={styles.plus}
+                    onPress={removeImage}
                   />
                 )}
               </View>
-              {/* <View style={styles.forPhoto}>
-                <EvilIcons
-                  style={styles.plus}
-                  name="plus"
-                  size={24}
-                  color="#FF6C00"
-                />
-              </View> */}
             </View>
           </KeyboardAvoidingView>
         </ImageBackground>
@@ -187,6 +189,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   forPhoto: {
+    alignSelf: "center",
     top: -60,
     position: "absolute",
     width: 120,
@@ -194,7 +197,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#f6f6f6",
     borderRadius: 16,
   },
+  avatar: {
+    borderRadius: 16,
+    width: 120,
+    height: 120,
+  },
   title: {
+    alignSelf: "center",
     marginTop: 82,
     marginBottom: 33,
     fontSize: 30,
@@ -202,7 +211,8 @@ const styles = StyleSheet.create({
     color: "#212121",
   },
   formInput: {
-    width: 343,
+    // width: 343,
+    marginHorizontal: 16,
     height: 50,
     paddingLeft: 32,
     backgroundColor: "#F6F6F6",
@@ -218,17 +228,16 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
     borderColor: "#FF6C00",
   },
-  passwordInput: {
-    alignItems: "flex-end",
-  },
   inscriptiption: {
     position: "absolute",
-    padding: 16,
+    alignSelf: "flex-end",
+    paddingTop: 16,
+    paddingRight: 32,
     color: "#1B4371",
     fontSize: 16,
   },
   button: {
-    width: 343,
+    marginHorizontal: 16,
     borderRadius: 100,
     backgroundColor: "#FF6C00",
     alignItems: "center",
@@ -246,6 +255,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   formEndText: {
+    alignSelf: "center",
     color: "#1B4371",
     fontSize: 16,
     fontFamily: "Roboto",
@@ -253,7 +263,7 @@ const styles = StyleSheet.create({
   },
   form: {
     // marginHorizontal: 16,
-    alignItems: "center",
+    // alignItems: "center",
     height: 549,
     left: 0,
     backgroundColor: "#ffffff",

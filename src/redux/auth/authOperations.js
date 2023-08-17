@@ -1,13 +1,13 @@
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  // onAuthStateChanged,
   updateProfile,
   signOut,
 } from "firebase/auth";
 import { auth } from "../../../firebase/config";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { uploadPhotoToServer } from "../../firebaseOperations/uploadPhotoToFirestore";
+import { deleteFileFromStorage } from "../../firebaseOperations/deletePhotoFromStorage";
 
 export const registerDB = createAsyncThunk(
   "user/signUp",
@@ -19,12 +19,17 @@ export const registerDB = createAsyncThunk(
         email,
         password
       );
-      const url = await uploadPhotoToServer(avatar);
-      console.log("url", url);
-      const newUser = await updateProfile(auth.currentUser, {
-        photoURL: url,
-        displayName: login,
-      });
+      if (avatar !== "") {
+        const url = await uploadPhotoToServer(avatar);
+        await updateProfile(auth.currentUser, {
+          displayName: login,
+          photoURL: url,
+        });
+      } else {
+        await updateProfile(auth.currentUser, {
+          displayName: login,
+        });
+      }
       return result.user;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
@@ -39,6 +44,35 @@ export const loginDB = createAsyncThunk(
       const { email, password } = credential;
       const result = await signInWithEmailAndPassword(auth, email, password);
       return result.user;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
+
+export const changeAvatar = createAsyncThunk(
+  "user/changeAvatar",
+  async (avatar, thunkAPI) => {
+    try {
+      const url = await uploadPhotoToServer(avatar);
+      const result = await updateProfile(auth.currentUser, {
+        photoURL: url,
+      });
+      return url;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
+
+export const deleteAvatar = createAsyncThunk(
+  "user/deleteAvatar",
+  async (avatar, thunkAPI) => {
+    try {
+      await deleteFileFromStorage(avatar);
+      const result = await updateProfile(auth.currentUser, {
+        photoURL: null,
+      });
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
     }

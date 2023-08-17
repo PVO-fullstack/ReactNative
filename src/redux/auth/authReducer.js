@@ -1,5 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { loginDB, registerDB, userLogOut } from "./authOperations";
+import {
+  changeAvatar,
+  deleteAvatar,
+  loginDB,
+  registerDB,
+  userLogOut,
+} from "./authOperations";
 
 export const authSlise = createSlice({
   name: "auth",
@@ -36,6 +42,12 @@ export const authSlise = createSlice({
         state.user.displayName = payload.displayName;
         state.user.photoURL = payload.photoURL;
         state.isLogin = true;
+      })
+      .addCase(changeAvatar.fulfilled, (state, { payload }) => {
+        state.user.photoURL = payload;
+      })
+      .addCase(deleteAvatar.fulfilled, (state) => {
+        state.user.photoURL = null;
       })
       .addCase(userLogOut.fulfilled, (state, { payload }) => {
         (state.isLogin = null),
