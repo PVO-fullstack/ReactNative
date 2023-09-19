@@ -17,6 +17,7 @@ export const authSlise = createSlice({
       photoURL: null,
     },
     isLogin: null,
+    error: null,
   },
   reducers: {
     updateUserProfile: (state, { payload }) => {
@@ -29,6 +30,9 @@ export const authSlise = createSlice({
   },
   extraReducers: (builder) =>
     builder
+      .addCase(registerDB.pending, (state) => {
+        state.error = null;
+      })
       .addCase(registerDB.fulfilled, (state, { payload }) => {
         state.user.uid = payload.uid;
         state.user.email = payload.email;
@@ -36,12 +40,21 @@ export const authSlise = createSlice({
         state.user.photoURL = payload.photoURL;
         state.isLogin = true;
       })
+      .addCase(registerDB.rejected, (state, { payload }) => {
+        state.error = payload;
+      })
+      .addCase(loginDB.pending, (state) => {
+        state.error = null;
+      })
       .addCase(loginDB.fulfilled, (state, { payload }) => {
         state.user.uid = payload.uid;
         state.user.email = payload.email;
         state.user.displayName = payload.displayName;
         state.user.photoURL = payload.photoURL;
         state.isLogin = true;
+      })
+      .addCase(loginDB.rejected, (state, { payload }) => {
+        state.error = payload;
       })
       .addCase(changeAvatar.fulfilled, (state, { payload }) => {
         state.user.photoURL = payload;

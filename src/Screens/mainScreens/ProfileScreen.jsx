@@ -56,9 +56,13 @@ export default function ProfileScreen({ route }) {
         collection(db, "posts", `${id}`, "comments")
       );
       const commentsLength = comment.docs.length;
+      const author = new Set([]);
+      const authorOfComment = comment.docs.map((comment) => {
+        author.add(comment.data().displayName);
+      });
       setPhotos((prev) => [
         ...prev,
-        { ...el, countsOfComment: commentsLength },
+        { ...el, countsOfComment: commentsLength, author: [...author] },
       ]);
     });
   };
@@ -154,7 +158,11 @@ export default function ProfileScreen({ route }) {
                             style={styles.message}
                             name="message-circle"
                             size={24}
-                            color="#FF6C00"
+                            color={
+                              item.author.includes(newUser.displayName)
+                                ? "#FF6C00"
+                                : "#BDBDBD"
+                            }
                           />
                           <Text style={styles.postText}>
                             {item.countsOfComment || 0}

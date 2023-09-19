@@ -36,6 +36,7 @@ export const RootNavigation = () => {
           <AuthStack.Screen
             options={{
               headerShown: false,
+              unmountOnBlur: true,
             }}
             name="Home"
             component={BottomNavigation}

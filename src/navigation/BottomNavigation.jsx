@@ -37,6 +37,7 @@ export const BottomNavigation = () => {
               />
             </View>
           ),
+          unmountOnBlur: true,
           headerTitle: "Публікації",
           headerTitleAlign: "center",
           headerTitleStyle: { color: "#212121" },

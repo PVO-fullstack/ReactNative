@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   View,
@@ -12,9 +12,10 @@ import {
 } from "react-native";
 import bg from "../../../img/Photo_BG.jpg";
 import { useNavigation } from "@react-navigation/native";
-// import { useAuth } from "../component/AuthContext";
-import { useDispatch } from "react-redux";
+import Toast from "react-native-root-toast";
+import { useDispatch, useSelector } from "react-redux";
 import { loginDB } from "../../redux/auth/authOperations";
+import { Loader } from "../../component/Loader";
 
 const initialState = {
   email: "",
@@ -25,19 +26,39 @@ export default function LoginScreen() {
   const [isHidePassword, setIsHidePassword] = useState(true);
   const [option, setOption] = useState("");
   const [state, setState] = useState(initialState);
+  const [newError, setNewError] = useState(null);
+  const [isloading, setisLoading] = useState(false);
+
   const navigation = useNavigation();
-  // const { logIn } = useAuth();
   const dispatch = useDispatch();
+  const { error } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    return () => {
+      setNewError(null);
+    };
+  }, [newError]);
 
   const keyboardHide = async () => {
     try {
       Keyboard.dismiss();
-      dispatch(loginDB(state));
+      setisLoading(true);
+      await dispatch(loginDB(state));
+      if (error) {
+        setNewError(error);
+      }
+      setisLoading(false);
       setState(initialState);
     } catch (error) {
       console.log(error);
     }
   };
+
+  if (newError) {
+    let toast = Toast.show(`${error}`, {
+      duration: Toast.durations.LONG,
+    });
+  }
 
   const toggleHidePassword = () => {
     setIsHidePassword((prev) => !prev);
@@ -115,6 +136,10 @@ export default function LoginScreen() {
             </View>
           </KeyboardAvoidingView>
         </ImageBackground>
+
+        <View style={[isloading ? styles.loader : styles.none]}>
+          <Loader />
+        </View>
       </View>
     </TouchableWithoutFeedback>
   );
@@ -203,4 +228,14 @@ const styles = StyleSheet.create({
   image: {
     flex: 1,
   },
+  loader: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    flex: 1,
+    backgroundColor: "#ffffff8a",
+    width: "100%",
+    height: "100%",
+  },
+  none: { display: "none" },
 });

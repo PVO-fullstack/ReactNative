@@ -13,6 +13,7 @@ import { writeCommentToFirestore } from "../../firebaseOperations/writeCommentTo
 import { useSelector } from "react-redux";
 import { collection, getDocs, doc, onSnapshot } from "firebase/firestore";
 import { db } from "../../../firebase/config";
+import { useNavigation } from "@react-navigation/native";
 
 function CommentsScreen({ route }) {
   const [comment, setComment] = useState("");
@@ -28,9 +29,9 @@ function CommentsScreen({ route }) {
 
   const { photoURL, displayName } = useSelector((state) => state.auth.user);
 
-  const { item } = route.params;
+  const navigation = useNavigation();
 
-  console.log("photo", item, photoURL);
+  const { item } = route.params;
 
   const getDataFromFirestore = async () => {
     const id = item.id;
@@ -50,6 +51,7 @@ function CommentsScreen({ route }) {
     const id = item.id;
     writeCommentToFirestore(id, comment, displayName, photoURL, currentTime);
     setComment("");
+    // navigation.navigate("Posts", { commentId: id });
   };
 
   return (
@@ -64,7 +66,7 @@ function CommentsScreen({ route }) {
             <View
               style={[
                 styles.commentsConteiner,
-                index % 2 !== 0 && styles.commentsConteiner2,
+                item.displayName === displayName && styles.commentsConteiner2,
               ]}
             >
               {/* <View style={styles.logo}> */}
@@ -75,13 +77,16 @@ function CommentsScreen({ route }) {
               {/* <Text>{item.displayName}</Text> */}
               {/* </View> */}
               <View
-                style={[styles.comment, index % 2 !== 0 && styles.comment2]}
+                style={[
+                  styles.comment,
+                  item.displayName === displayName && styles.comment2,
+                ]}
               >
                 <Text style={styles.commentText}>{item.comment}</Text>
                 <Text
                   style={[
                     styles.commentDate,
-                    index % 2 !== 0 && styles.commentDate2,
+                    item.displayName === displayName && styles.commentDate2,
                   ]}
                 >
                   {item.currentTime}

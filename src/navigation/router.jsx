@@ -1,11 +1,11 @@
 import React from "react";
+import { RootSiblingParent } from "react-native-root-siblings";
 import { RootNavigation } from "./RootNavigation";
-import { BottomNavigation } from "./BottomNavigation";
-import { useSelector } from "react-redux";
 
-export const router = (isAuth) => {
-  // if (!isAuth) {
-  return <RootNavigation />;
-  // }
-  // return <BottomNavigation />;
+export const router = () => {
+  return (
+    <RootSiblingParent>
+      <RootNavigation />
+    </RootSiblingParent>
+  );
 };

@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import userPhoto from "../../../img/foto.jpg";
 import { Feather } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 
 import { collection, getDocs, doc, onSnapshot } from "firebase/firestore";
@@ -26,6 +26,15 @@ const user = {
 export default function PostsScreeen({ route }) {
   const [photos, setPhotos] = useState([]);
   const newUser = useSelector((state) => state.auth.user);
+  const isFocused = useIsFocused();
+
+  // console.log("isFocused", isFocused);
+
+  useEffect(() => {
+    getDataFromFirestore();
+    getCommentsFromFirestore();
+    return () => {};
+  }, [isFocused]);
 
   const getDataFromFirestore = async () => {
     await onSnapshot(collection(db, "posts"), async (data) => {
@@ -38,18 +47,29 @@ export default function PostsScreeen({ route }) {
             collection(db, "posts", `${id}`, "comments")
           );
           const commentsLength = comment.docs.length;
+          const author = new Set([]);
+          const authorOfComment = comment.docs.map((comment) => {
+            author.add(comment.data().displayName);
+          });
           setPhotos((prev) => [
             ...prev,
-            { ...el, countsOfComment: commentsLength },
+            { ...el, countsOfComment: commentsLength, author: [...author] },
           ]);
         });
       }
     });
   };
 
-  useEffect(() => {
-    getDataFromFirestore();
-  }, []);
+  const getCommentsFromFirestore = async () => {
+    if (photos) {
+      photos.map((post) => {
+        const id = post.id;
+        onSnapshot(collection(db, "posts", `${id}`, "comments"), (doc) => {
+          post.countsOfComment = doc.docs.length;
+        });
+      });
+    }
+  };
 
   const navigation = useNavigation();
 
@@ -88,7 +108,11 @@ export default function PostsScreeen({ route }) {
                       style={styles.message}
                       name="message-circle"
                       size={24}
-                      color="#BDBDBD"
+                      color={
+                        item.author.includes(newUser.displayName)
+                          ? "#FF6C00"
+                          : "#BDBDBD"
+                      }
                     />
                     <Text style={styles.postText}>
                       {item.countsOfComment || 0}
@@ -183,6 +207,9 @@ const styles = StyleSheet.create({
   },
   message: {
     marginRight: 9,
+  },
+  userMessage: {
+    color: "#FF6C00",
   },
   map: {
     marginLeft: 49,

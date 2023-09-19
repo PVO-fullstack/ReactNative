@@ -13,12 +13,15 @@ import {
   Image,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
+import Toast from "react-native-root-toast";
 import { EvilIcons } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import bg from "../../../img/Photo_BG.jpg";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import { registerDB } from "../../redux/auth/authOperations";
+import { useEffect } from "react";
+import { Loader } from "../../component/Loader";
 
 const initialState = {
   login: "",
@@ -32,8 +35,18 @@ export default function RegistrationScreens() {
   const [option, setOption] = useState("");
   const [state, setState] = useState(initialState);
   const [image, setImage] = useState(null);
+  const [newError, setNewError] = useState(null);
+  const [isloading, setisLoading] = useState(false);
   const navigation = useNavigation();
   const dispatch = useDispatch();
+
+  const { error } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    return () => {
+      setNewError(null);
+    };
+  }, [newError]);
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -57,12 +70,23 @@ export default function RegistrationScreens() {
   const keyboardHide = async () => {
     Keyboard.dismiss();
     try {
-      dispatch(registerDB(state));
+      setisLoading(true);
+      await dispatch(registerDB(state));
+      if (error) {
+        setNewError(error);
+      }
+      setisLoading(false);
     } catch (error) {
       console.log(error);
     }
     setState(initialState);
   };
+
+  if (newError) {
+    let toast = Toast.show(`${error}`, {
+      duration: Toast.durations.LONG,
+    });
+  }
 
   const toggleHidePassword = () => {
     setIsHidePassword((prev) => !prev);
@@ -105,7 +129,10 @@ export default function RegistrationScreens() {
                 placeholderTextColor="#bdbdbd"
                 autoCapitalize="none"
                 onChangeText={(value) => {
-                  setState((prevState) => ({ ...prevState, email: value }));
+                  setState((prevState) => ({
+                    ...prevState,
+                    email: value.trim(),
+                  }));
                 }}
                 value={state.email}
                 style={[
@@ -177,6 +204,9 @@ export default function RegistrationScreens() {
             </View>
           </KeyboardAvoidingView>
         </ImageBackground>
+        <View style={[isloading ? styles.loader : styles.none]}>
+          <Loader />
+        </View>
       </View>
     </TouchableWithoutFeedback>
   );
@@ -278,4 +308,14 @@ const styles = StyleSheet.create({
   image: {
     flex: 1,
   },
+  loader: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    flex: 1,
+    backgroundColor: "#ffffff8a",
+    width: "100%",
+    height: "100%",
+  },
+  none: { display: "none" },
 });
