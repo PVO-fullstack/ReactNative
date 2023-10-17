@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import * as Yup from "yup";
 import {
   StyleSheet,
   View,
@@ -33,6 +34,10 @@ export default function LoginScreen() {
   const dispatch = useDispatch();
   const { error } = useSelector((state) => state.auth);
 
+  const passwordRules = /^[a-zA-Z0-9!@#$%^&*]{6,16}$/;
+
+  const emailRegexp = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+
   useEffect(() => {
     return () => {
       setNewError(null);
@@ -43,12 +48,23 @@ export default function LoginScreen() {
     try {
       Keyboard.dismiss();
       setisLoading(true);
-      await dispatch(loginDB(state));
-      if (error) {
-        setNewError(error);
+      if (emailRegexp.test(state.email) !== true) {
+        setisLoading(false);
+        return alert("Email invalid");
+      } else if (passwordRules.test(state.password) !== true) {
+        setisLoading(false);
+        return alert("Password may be min 6 and max 16 characters");
       }
-      setisLoading(false);
-      setState(initialState);
+      await dispatch(loginDB(state)).then((result) => {
+        if (result.error) {
+          setisLoading(false);
+          return alert("Email or password invalid");
+        }
+        setState(initialState);
+      });
+      // if (error) {
+      //   setNewError(error);
+      // }
     } catch (error) {
       console.log(error);
     }
