@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Native",
-    "slug": "Native",
+    "slug": "native",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -21,11 +21,17 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.pvo.Native"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
-    
+    },
+    "extra": {
+      "eas": {
+        "projectId": "f63a3062-e7f2-4a9c-a19e-065c05d18a2e"
+      }
+    },
+    "owner": "pvo"
   }
 }

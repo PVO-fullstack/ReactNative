@@ -112,7 +112,10 @@ export default function RegistrationScreens() {
                 placeholderTextColor="#bdbdbd"
                 autoCapitalize="none"
                 onChangeText={(value) => {
-                  setState((prevState) => ({ ...prevState, login: value }));
+                  setState((prevState) => ({
+                    ...prevState,
+                    login: value.trim(),
+                  }));
                 }}
                 value={state.login}
                 style={[

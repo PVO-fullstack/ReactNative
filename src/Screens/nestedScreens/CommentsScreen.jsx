@@ -38,7 +38,10 @@ function CommentsScreen({ route }) {
     await onSnapshot(collection(db, "posts", `${id}`, "comments"), (data) => {
       if (data) {
         const posts = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
-        setComments(posts);
+        const sorted = posts.sort((first, second) =>
+          first.currentTime < second.currentTime ? 1 : -1
+        );
+        setComments(sorted);
       }
     });
   };

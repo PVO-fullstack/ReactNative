@@ -40,22 +40,27 @@ export default function PostsScreeen({ route }) {
     await onSnapshot(collection(db, "posts"), async (data) => {
       if (data) {
         const posts = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
-        posts.map(async (el) => {
-          setPhotos([]);
-          const id = el.id;
-          const comment = await getDocs(
-            collection(db, "posts", `${id}`, "comments")
-          );
-          const commentsLength = comment.docs.length;
-          const author = new Set([]);
-          const authorOfComment = comment.docs.map((comment) => {
-            author.add(comment.data().displayName);
+        posts
+          .sort(
+            (firstItem, secondItem) =>
+              secondItem.currentTime - firstItem.currentTime
+          )
+          .map(async (el) => {
+            setPhotos([]);
+            const id = el.id;
+            const comment = await getDocs(
+              collection(db, "posts", `${id}`, "comments")
+            );
+            const commentsLength = comment.docs.length;
+            const author = new Set([]);
+            const authorOfComment = comment.docs.map((comment) => {
+              author.add(comment.data().displayName);
+            });
+            setPhotos((prev) => [
+              ...prev,
+              { ...el, countsOfComment: commentsLength, author: [...author] },
+            ]);
           });
-          setPhotos((prev) => [
-            ...prev,
-            { ...el, countsOfComment: commentsLength, author: [...author] },
-          ]);
-        });
       }
     });
   };
@@ -70,6 +75,8 @@ export default function PostsScreeen({ route }) {
       });
     }
   };
+
+  console.log("phot", photos);
 
   const navigation = useNavigation();
 

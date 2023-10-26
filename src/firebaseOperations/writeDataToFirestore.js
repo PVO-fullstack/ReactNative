@@ -10,6 +10,7 @@ export const writeDataToFirestore = async (
   uid
 ) => {
   const photo = await uploadPhotoToServer(uri);
+  const currentTime = new Date();
   try {
     const docRef = await addDoc(collection(db, "posts"), {
       photo,
@@ -17,6 +18,7 @@ export const writeDataToFirestore = async (
       location,
       displayName,
       uid,
+      currentTime,
     });
     console.log("Document written with ID: ", docRef.id);
   } catch (e) {

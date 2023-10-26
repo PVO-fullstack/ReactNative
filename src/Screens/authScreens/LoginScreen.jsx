@@ -100,7 +100,10 @@ export default function LoginScreen() {
                 autoCapitalize="none"
                 placeholderTextColor="#bdbdbd"
                 onChangeText={(value) => {
-                  setState((prevState) => ({ ...prevState, email: value }));
+                  setState((prevState) => ({
+                    ...prevState,
+                    email: value.trim(),
+                  }));
                 }}
                 value={state.email}
                 style={[
